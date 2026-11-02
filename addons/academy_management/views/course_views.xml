@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Course List View -->
+    <record id="academy_course_view_list" model="ir.ui.view">
+        <field name="name">academy.course.list</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <list string="Courses">
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Course Form View -->
+    <record id="academy_course_view_form" model="ir.ui.view">
+        <field name="name">academy.course.form</field>
+        <field name="model">academy.course</field>
+        <field name="arch" type="xml">
+            <form string="Course">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Course Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="description"/>
+                        <field name="active"/>
+		   </group>
+
+		   <notebook>
+    		  	<page string="Students">
+        			<field name="student_ids">
+            				<list>
+                				<field name="student_id"/>
+                				<field name="name"/>
+                				<field name="email"/>
+                				<field name="phone"/>
+            				</list>
+        			</field>
+    			</page>
+		   </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Open Courses Action -->
+    <record id="academy_course_action" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">academy.course</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first course!
+            </p>
+        </field>
+    </record>
+
+    <!-- Courses Menu -->
+    <menuitem
+        id="academy_course_menu"
+        name="Courses"
+        parent="academy_management_menu_root"
+        action="academy_course_action"
+        sequence="20"
+    />
+
+</odoo>

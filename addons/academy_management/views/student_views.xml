@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Student List View -->
+    <record id="academy_student_view_list" model="ir.ui.view">
+        <field name="name">academy.student.list</field>
+        <field name="model">academy.student</field>
+        <field name="arch" type="xml">
+	    <list string="Students">
+		<field name="student_id"/>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="date_of_birth"/>
+                <field name="gender"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Student Form View -->
+    <record id="academy_student_view_form" model="ir.ui.view">
+        <field name="name">academy.student.form</field>
+        <field name="model">academy.student</field>
+        <field name="arch" type="xml">
+            <form string="Student">
+                <sheet>
+
+		    <div class="oe_title">
+			<field name="student_id" readonly="1"/>
+			
+			<label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Student Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="email"/>
+			    <field name="phone"/>
+			    <field name="course_id"/>
+			    <field name="subject_ids" widget="many2many_tags"/>
+                        </group>
+
+                        <group>
+			    <field name="date_of_birth"/>
+			    <field name="age" readonly="1"/>
+                            <field name="gender"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <!-- Open Students Action -->
+    <record id="academy_student_action" model="ir.actions.act_window">
+        <field name="name">Students</field>
+        <field name="res_model">academy.student</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first student!
+            </p>
+        </field>
+    </record>
+
+    <!-- Main Academy Menu -->
+    <menuitem
+        id="academy_management_menu_root"
+        name="Academy Management"
+        sequence="10"
+    />
+
+    <!-- Students Menu -->
+    <menuitem
+        id="academy_student_menu"
+        name="Students"
+        parent="academy_management_menu_root"
+        action="academy_student_action"
+        sequence="10"
+    />
+</odoo>

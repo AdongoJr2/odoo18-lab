@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Subject List View -->
+    <record id="view_academy_subject_list" model="ir.ui.view">
+        <field name="name">academy.subject.list</field>
+        <field name="model">academy.subject</field>
+        <field name="arch" type="xml">
+            <list string="Subjects">
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Subject Form View -->
+    <record id="view_academy_subject_form" model="ir.ui.view">
+        <field name="name">academy.subject.form</field>
+        <field name="model">academy.subject</field>
+        <field name="arch" type="xml">
+            <form string="Subject">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Subject Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <field name="description"/>
+                        <field name="active"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Students">
+                            <field name="student_ids">
+                                <list>
+                                    <field name="student_id"/>
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Subject Window Action -->
+    <record id="action_academy_subject" model="ir.actions.act_window">
+        <field name="name">Subjects</field>
+        <field name="res_model">academy.subject</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Subject Menu -->
+    <menuitem
+        id="menu_academy_subject"
+        name="Subjects"
+        parent="academy_management_menu_root"
+        action="action_academy_subject"
+        sequence="30"
+    />
+
+</odoo>

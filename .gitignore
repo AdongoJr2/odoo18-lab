@@ -1,0 +1,44 @@
+# Odoo
+*.pyc
+*.pyo
+__pycache__/
+*.egg-info/
+.eggs/
+*.log
+filestore/
+sessions/
+odoorc
+odoo.conf.local
+
+# Docker / compose overrides
+docker-compose.override.yml
+.env
+.env.*
+
+# Python
+*.so
+*.egg
+build/
+dist/
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS / misc
+*.bak
+*.tmp
