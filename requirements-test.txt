@@ -1,6 +1,6 @@
 # Odoo Testing
 pytest>=7.0.0
-pytest-odoo>=5.0.0
+pytest-odoo>=2.0.0
 
 # Linting
 ruff>=0.4.0

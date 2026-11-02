@@ -1,8 +1,8 @@
 {
-    'name': 'Academy Management',
-    'version': '18.0.1.0.0',
-    'summary': 'Basic academy and school management',
-    'description': """
+    "name": "Academy Management",
+    "version": "18.0.1.0.0",
+    "summary": "Basic academy and school management",
+    "description": """
         Academy Management
         ==================
 
@@ -11,17 +11,17 @@
         Features:
         - Student management
     """,
-    'category': 'Education',
-    'author': 'Moses Adongo',
-    'license': 'LGPL-3',
-    'depends': ['base'],
-    'data': [
-        'security/ir.model.access.csv',
-        'data/student_sequence.xml',
-        'views/student_views.xml',
-        'views/course_views.xml',
-        'views/subject_views.xml',
+    "category": "Education",
+    "author": "Moses Adongo",
+    "license": "LGPL-3",
+    "depends": ["base"],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/student_sequence.xml",
+        "views/student_views.xml",
+        "views/course_views.xml",
+        "views/subject_views.xml",
     ],
-    'installable': True,
-    'application': True,
+    "installable": True,
+    "application": True,
 }

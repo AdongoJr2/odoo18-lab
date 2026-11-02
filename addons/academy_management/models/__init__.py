@@ -1,3 +1,1 @@
-from . import student
-from . import course
-from . import subject
+from . import course, student, subject
