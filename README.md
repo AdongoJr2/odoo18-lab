@@ -2,6 +2,7 @@
 
 [![License: LGPL-3](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
 [![Odoo 18](https://img.shields.io/badge/Odoo-18.0-purple.svg)](https://www.odoo.com)
+[![Tests](https://github.com/AdongoJr2/odoo18-lab/actions/workflows/test.yml/badge.svg)](https://github.com/AdongoJr2/odoo18-lab/actions/workflows/test.yml)
 
 A custom Odoo 18 module for managing academy/school operations, paired with a
 ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
@@ -25,7 +26,8 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 ## Prerequisites
 
 - Docker & Docker Compose
-- (Optional) Git, GitHub CLI for development
+- Python 3.10+ (for local development)
+- Git, GitHub CLI for development
 
 ## Quick start
 
@@ -50,9 +52,13 @@ odoo18-lab/
 │   ├── models/                  # student, course, subject
 │   ├── views/                   # list & form views + menus
 │   ├── security/                # access rights (CSV)
-│   └── data/                    # student sequence
+│   ├── data/                    # student sequence
+│   └── tests/                   # unit & integration tests
 ├── config/odoo.conf             # Odoo configuration
 ├── docker-compose.yml           # Postgres 16 + Odoo 18
+├── .pre-commit-config.yaml     # Pre-commit hooks
+├── pyproject.toml              # Tool configuration
+├── Makefile                    # Development commands
 ├── .gitignore
 ├── LICENSE                      # LGPL-3.0
 └── README.md
@@ -74,6 +80,78 @@ Logs:
 docker compose logs -f odoo
 ```
 
+## Testing
+
+### Run tests with Docker
+
+```bash
+# Create a fresh test database
+docker compose exec db psql -U odoo -d postgres -c "DROP DATABASE IF EXISTS odoo_test;"
+docker compose exec db psql -U odoo -d postgres -c "CREATE DATABASE odoo_test OWNER odoo;"
+
+# Run Odoo tests
+docker compose exec odoo odoo -d odoo_test --test-enable --stop-after-init \
+  --init=academy_management --http-port=8099
+```
+
+### Test coverage
+
+- **Unit tests**: Student, Course, and Subject model tests
+- **Integration tests**: End-to-end workflow verification
+- **Total**: 13 tests covering model creation, relationships, constraints, and sequences
+
+## Linting
+
+### Prerequisites
+
+```bash
+# Install development dependencies
+pip install -r requirements-test.txt
+```
+
+### Run linting
+
+```bash
+# Using Makefile (recommended)
+make lint
+
+# Or manually
+ruff check .                    # Fast Python linting
+black --check .                 # Code formatting
+isort --check .                 # Import sorting
+mypy .                          # Type checking
+```
+
+### Auto-format code
+
+```bash
+make lint-fix
+# Or manually
+ruff check . --fix
+black .
+isort .
+```
+
+### Pre-commit hooks
+
+```bash
+# Install hooks
+pre-commit install
+
+# Run on all files
+pre-commit run --all-files
+```
+
+## CI/CD
+
+GitHub Actions automatically runs on every push to `main` and pull requests:
+
+- **Linting**: ruff, black, isort, mypy
+- **Testing**: Odoo test suite with PostgreSQL service
+- **Python versions**: 3.10
+
+View workflow: [GitHub Actions](https://github.com/AdongoJr2/odoo18-lab/actions)
+
 ## Contributing
 
 Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) and
@@ -87,3 +165,5 @@ To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 This project is licensed under the GNU Lesser General Public License v3.0 — see
 [LICENSE](LICENSE). The addon itself declares `LGPL-3` in its manifest.
+EOF
+echo "README updated"
