@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+select = ["E", "F", "W", "C90"]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["academy_management"]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+
+[tool.isort]
+profile = "black"
+line_length = 88

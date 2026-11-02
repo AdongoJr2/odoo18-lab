@@ -42,3 +42,16 @@ Thumbs.db
 # OS / misc
 *.bak
 *.tmp
+
+# Tests
+/tests/__pycache__/
+*.coverage
+htmlcov/
+.pytest_cache/
+
+# Pre-commit
+.git/hooks/
+
+# Local settings
+/local_settings.py
+
