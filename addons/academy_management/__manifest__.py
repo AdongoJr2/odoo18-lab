@@ -14,7 +14,7 @@
     "category": "Education",
     "author": "Moses Adongo",
     "license": "LGPL-3",
-    "depends": ["base"],
+    "depends": ["base", "web"],
     "data": [
         "security/ir.model.access.csv",
         "data/student_sequence.xml",
@@ -22,6 +22,8 @@
         "views/course_views.xml",
         "views/subject_views.xml",
         "wizard/bulk_enrollment_views.xml",
+        "reports/student_transcript_templates.xml",
+        "reports/student_transcript_reports.xml",
     ],
     "installable": True,
     "application": True,

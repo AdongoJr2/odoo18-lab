@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_student_transcript_document">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="student">
+                <div class="page">
+                    <h2>Student Transcript</h2>
+                    <div class="row mt-4 mb-4">
+                        <div class="col-6">
+                            <strong>Student:</strong>
+                            <span t-field="student.name"/>
+                            <br/>
+                            <strong>Registration Number:</strong>
+                            <span t-field="student.student_id"/>
+                            <br/>
+                            <strong>Status:</strong>
+                            <span t-field="student.state"/>
+                        </div>
+                        <div class="col-6">
+                            <strong>Email:</strong>
+                            <span t-field="student.email"/>
+                            <br/>
+                            <strong>Phone:</strong>
+                            <span t-field="student.phone"/>
+                            <br/>
+                            <strong>Date of Birth:</strong>
+                            <span t-field="student.date_of_birth"/>
+                        </div>
+                    </div>
+
+                    <h3>Enrollment</h3>
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr>
+                                <th>Course</th>
+                                <td>
+                                    <span t-if="student.course_id" t-field="student.course_id.name"/>
+                                    <span t-else="">Not assigned</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Subjects</th>
+                                <td>
+                                    <span t-if="student.subject_ids">
+                                        <t t-foreach="student.subject_ids" t-as="subject">
+                                            <span t-field="subject.name"/>
+                                            <span t-if="not subject_last">, </span>
+                                        </t>
+                                    </span>
+                                    <span t-else="">None assigned</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="text-muted mt-5">
+                        Generated from Academy Management.
+                    </p>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_student_transcript">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="student">
+                <t t-call="academy_management.report_student_transcript_document"/>
+            </t>
+        </t>
+    </template>
+</odoo>

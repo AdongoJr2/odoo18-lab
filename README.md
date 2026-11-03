@@ -14,6 +14,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Course management** — courses with descriptions and enrolled students.
 - **Enrollment workflow** — draft, enrolled, graduated, and dropped student states.
 - **Course capacity** — computed student counts and enrollment blocking when a course is full.
+- **Student transcripts** — printable QWeb PDF reports with enrollment and subject details.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Access control** — full CRUD for internal users (`base.group_user`).
 
@@ -55,6 +56,8 @@ odoo18-lab/
 │   ├── views/                   # list & form views + menus
 │   ├── security/                # access rights (CSV)
 │   ├── data/                    # student sequence
+│   ├── reports/                 # QWeb transcript report
+│   └── wizard/                  # bulk enrollment wizard
 │   └── tests/                   # unit & integration tests
 ├── config/odoo.conf             # Odoo configuration
 ├── docker-compose.yml           # Postgres 16 + Odoo 18
@@ -100,7 +103,13 @@ docker compose exec odoo odoo -d odoo_test --test-enable --stop-after-init \
 
 - **Unit tests**: Student, Course, and Subject model tests
 - **Integration tests**: End-to-end workflow verification
-- **Total**: 22 Odoo tests covering model creation, relationships, constraints, sequences, capacity, and workflow transitions
+- **Total**: 30 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, and reports
+
+### Student transcript
+
+Select one or more students from the Students list, open **Print**, and choose
+**Student Transcript**. Odoo generates a QWeb PDF containing the student's
+registration details, status, course, and subjects.
 
 ## Linting
 
