@@ -21,6 +21,7 @@
         "views/student_views.xml",
         "views/course_views.xml",
         "views/subject_views.xml",
+        "wizard/bulk_enrollment_views.xml",
     ],
     "installable": True,
     "application": True,

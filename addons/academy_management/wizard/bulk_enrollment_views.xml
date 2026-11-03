@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="academy_bulk_enrollment_view_form" model="ir.ui.view">
+        <field name="name">academy.bulk.enrollment.form</field>
+        <field name="model">academy.bulk.enrollment</field>
+        <field name="arch" type="xml">
+            <form string="Bulk Enrollment">
+                <group>
+                    <field name="course_id"/>
+                    <field name="student_ids" widget="many2many_tags"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Enroll Students" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="academy_bulk_enrollment_action" model="ir.actions.act_window">
+        <field name="name">Bulk Enroll Students</field>
+        <field name="res_model">academy.bulk.enrollment</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="academy_bulk_enrollment_view_form"/>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_academy_student"/>
+        <field name="binding_view_types">list</field>
+    </record>
+</odoo>

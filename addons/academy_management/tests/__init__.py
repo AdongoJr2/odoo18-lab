@@ -3,4 +3,5 @@ from . import (
     test_integration,
     test_student_models,
     test_subject_models,
+    test_wizards,
 )
