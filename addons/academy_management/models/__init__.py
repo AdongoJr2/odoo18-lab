@@ -1,1 +1,1 @@
-from . import attendance, course, student, subject
+from . import attendance, course, dashboard, student, subject

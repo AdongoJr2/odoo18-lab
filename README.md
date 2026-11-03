@@ -16,6 +16,8 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Course capacity** — computed student counts and enrollment blocking when a course is full.
 - **Student transcripts** — printable QWeb PDF reports with enrollment and subject details.
 - **Attendance tracking** — daily present, absent, late, and excused records with calendar and list views.
+- **Academy dashboard** — student, enrollment, course-capacity, and attendance KPIs with drill-down actions.
+- **Academy dashboard** — student, enrollment, course-capacity, and attendance KPIs with drill-down actions.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules.
 
@@ -105,7 +107,7 @@ docker compose exec odoo odoo -d odoo_test --test-enable --stop-after-init \
 
 - **Unit tests**: Student, Course, and Subject model tests
 - **Integration tests**: End-to-end workflow verification
-- **Total**: 38 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, security rules, and attendance
+- **Total**: 41 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, security rules, attendance, and dashboard KPIs
 
 ### Student transcript
 
@@ -127,6 +129,16 @@ record rule then limits that user to their own profile.
 Open **Academy Management → Attendance** to record daily attendance. Each entry
 must match the student's course, and duplicate entries for the same student and
 date are rejected. Attendance is available in calendar, list, and form views.
+
+### Dashboard
+
+Open **Academy Management → Dashboard** for live KPI cards. The cards link to
+the underlying Students, Courses, Attendance, and Attendance Analysis views.
+
+### Dashboard
+
+Open **Academy Management → Dashboard** for live KPI cards. The cards link to
+the underlying Students, Courses, Attendance, and Attendance Analysis views.
 
 ## Linting
 

@@ -60,6 +60,34 @@
         </field>
     </record>
 
+    <record id="academy_attendance_view_graph" model="ir.ui.view">
+        <field name="name">academy.attendance.graph</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <graph string="Attendance Analysis" type="bar">
+                <field name="status" type="row"/>
+                <field name="course_id" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="academy_attendance_view_pivot" model="ir.ui.view">
+        <field name="name">academy.attendance.pivot</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <pivot string="Attendance Analysis">
+                <field name="course_id" type="row"/>
+                <field name="status" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="academy_attendance_analysis_action" model="ir.actions.act_window">
+        <field name="name">Attendance Analysis</field>
+        <field name="res_model">academy.attendance</field>
+        <field name="view_mode">graph,pivot,list</field>
+    </record>
+
     <menuitem id="academy_attendance_menu" name="Attendance"
               parent="academy_management_menu_root"
               action="academy_attendance_action" sequence="40"/>
