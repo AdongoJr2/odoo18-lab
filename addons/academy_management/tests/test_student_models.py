@@ -127,3 +127,14 @@ class TestAcademyStudentStateTransitions(TransactionCase):
         student.action_drop()
         student.action_reset_to_draft()
         self.assertEqual(student.state, "draft")
+
+
+class TestAcademyStudentViews(TransactionCase):
+    def test_student_action_opens_kanban_first(self):
+        action = self.env.ref("academy_management.academy_student_action")
+        self.assertEqual(action.view_mode, "kanban,list,form")
+
+    def test_student_kanban_view_groups_by_state(self):
+        view = self.env.ref("academy_management.academy_student_view_kanban")
+        self.assertIn('default_group_by="state"', view.arch_db)
+        self.assertIn('<t t-name="card">', view.arch_db)
