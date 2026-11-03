@@ -38,4 +38,25 @@
         <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
         <field name="domain_force">[('user_id', '=', user.id)]</field>
     </record>
+
+    <record id="rule_academy_attendance_manager" model="ir.rule">
+        <field name="name">Academy managers: all attendance</field>
+        <field name="model_id" ref="model_academy_attendance"/>
+        <field name="groups" eval="[(4, ref('group_academy_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_academy_attendance_teacher" model="ir.rule">
+        <field name="name">Academy teachers: all attendance</field>
+        <field name="model_id" ref="model_academy_attendance"/>
+        <field name="groups" eval="[(4, ref('group_academy_teacher'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_academy_attendance_owner" model="ir.rule">
+        <field name="name">Academy students: own attendance</field>
+        <field name="model_id" ref="model_academy_attendance"/>
+        <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
+        <field name="domain_force">[('student_id.user_id', '=', user.id)]</field>
+    </record>
 </odoo>

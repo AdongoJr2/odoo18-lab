@@ -1,4 +1,5 @@
 from . import (
+    test_attendance,
     test_course_models,
     test_integration,
     test_reports,

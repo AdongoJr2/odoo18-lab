@@ -22,6 +22,7 @@
         "views/student_views.xml",
         "views/course_views.xml",
         "views/subject_views.xml",
+        "views/attendance_views.xml",
         "wizard/bulk_enrollment_views.xml",
         "reports/student_transcript_templates.xml",
         "reports/student_transcript_reports.xml",

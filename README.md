@@ -15,6 +15,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Enrollment workflow** — draft, enrolled, graduated, and dropped student states.
 - **Course capacity** — computed student counts and enrollment blocking when a course is full.
 - **Student transcripts** — printable QWeb PDF reports with enrollment and subject details.
+- **Attendance tracking** — daily present, absent, late, and excused records with calendar and list views.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules.
 
@@ -25,6 +26,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 | `academy.student` | `student_id` (unique), `name`, `email`, `phone`, `user_id`, `date_of_birth`, `age` (computed), `gender`, `state`, `active`, `course_id` (M2one), `subject_ids` (M2many) |
 | `academy.course` | `name`, `description`, `capacity`, `student_count`, `is_full`, `active`, `student_ids` (O2many) |
 | `academy.subject` | `name`, `description`, `active`, `student_ids` (M2many) |
+| `academy.attendance` | `student_id`, `course_id`, `attendance_date`, `status`, `notes`; unique per student and date |
 
 ## Prerequisites
 
@@ -103,7 +105,7 @@ docker compose exec odoo odoo -d odoo_test --test-enable --stop-after-init \
 
 - **Unit tests**: Student, Course, and Subject model tests
 - **Integration tests**: End-to-end workflow verification
-- **Total**: 34 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, and security rules
+- **Total**: 38 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, security rules, and attendance
 
 ### Student transcript
 
@@ -119,6 +121,12 @@ registration details, status, course, and subjects.
 
 Assign a student's internal user through the **Portal User** field. The student
 record rule then limits that user to their own profile.
+
+### Attendance tracking
+
+Open **Academy Management → Attendance** to record daily attendance. Each entry
+must match the student's course, and duplicate entries for the same student and
+date are rejected. Attendance is available in calendar, list, and form views.
 
 ## Linting
 

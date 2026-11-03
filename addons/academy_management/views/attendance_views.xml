@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="academy_attendance_view_list" model="ir.ui.view">
+        <field name="name">academy.attendance.list</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <list string="Attendance">
+                <field name="attendance_date"/>
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="status" widget="badge"
+                       decoration-success="status == 'present'"
+                       decoration-danger="status == 'absent'"
+                       decoration-warning="status == 'late'"
+                       decoration-info="status == 'excused'"/>
+                <field name="notes" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="academy_attendance_view_calendar" model="ir.ui.view">
+        <field name="name">academy.attendance.calendar</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <calendar string="Attendance" date_start="attendance_date"
+                      color="status" mode="month">
+                <field name="student_id"/>
+                <field name="course_id"/>
+                <field name="status"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="academy_attendance_view_form" model="ir.ui.view">
+        <field name="name">academy.attendance.form</field>
+        <field name="model">academy.attendance</field>
+        <field name="arch" type="xml">
+            <form string="Attendance">
+                <sheet>
+                    <group>
+                        <field name="attendance_date"/>
+                        <field name="student_id"/>
+                        <field name="course_id"/>
+                        <field name="status"/>
+                    </group>
+                    <field name="notes" placeholder="Optional attendance notes..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="academy_attendance_action" model="ir.actions.act_window">
+        <field name="name">Attendance</field>
+        <field name="res_model">academy.attendance</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Record your first attendance entry!
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="academy_attendance_menu" name="Attendance"
+              parent="academy_management_menu_root"
+              action="academy_attendance_action" sequence="40"/>
+</odoo>

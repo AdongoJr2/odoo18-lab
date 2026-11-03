@@ -10,3 +10,6 @@ access_academy_subject_teacher,access.academy.subject.teacher,model_academy_subj
 access_academy_subject_student,access.academy.subject.student,model_academy_subject,academy_management.group_academy_student,1,0,0,0
 access_academy_bulk_enrollment_manager,access.academy.bulk.enrollment.manager,model_academy_bulk_enrollment,academy_management.group_academy_manager,1,1,1,1
 access_academy_bulk_enrollment_teacher,access.academy.bulk.enrollment.teacher,model_academy_bulk_enrollment,academy_management.group_academy_teacher,1,1,1,0
+access_academy_attendance_manager,access.academy.attendance.manager,model_academy_attendance,academy_management.group_academy_manager,1,1,1,1
+access_academy_attendance_teacher,access.academy.attendance.teacher,model_academy_attendance,academy_management.group_academy_teacher,1,1,1,0
+access_academy_attendance_student,access.academy.attendance.student,model_academy_attendance,academy_management.group_academy_student,1,0,0,0
