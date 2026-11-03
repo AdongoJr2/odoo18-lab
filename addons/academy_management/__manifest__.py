@@ -16,6 +16,7 @@
     "license": "LGPL-3",
     "depends": ["base", "web"],
     "data": [
+        "security/security.xml",
         "security/ir.model.access.csv",
         "data/student_sequence.xml",
         "views/student_views.xml",

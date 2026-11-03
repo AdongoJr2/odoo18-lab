@@ -16,13 +16,13 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Course capacity** — computed student counts and enrollment blocking when a course is full.
 - **Student transcripts** — printable QWeb PDF reports with enrollment and subject details.
 - **Subject management** — subjects linked to students (many-to-many).
-- **Access control** — full CRUD for internal users (`base.group_user`).
+- **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules.
 
 ## Data model
 
 | Model | Key fields |
 |---|---|
-| `academy.student` | `student_id` (unique), `name`, `email`, `phone`, `date_of_birth`, `age` (computed), `gender`, `state`, `active`, `course_id` (M2one), `subject_ids` (M2many) |
+| `academy.student` | `student_id` (unique), `name`, `email`, `phone`, `user_id`, `date_of_birth`, `age` (computed), `gender`, `state`, `active`, `course_id` (M2one), `subject_ids` (M2many) |
 | `academy.course` | `name`, `description`, `capacity`, `student_count`, `is_full`, `active`, `student_ids` (O2many) |
 | `academy.subject` | `name`, `description`, `active`, `student_ids` (M2many) |
 
@@ -103,13 +103,22 @@ docker compose exec odoo odoo -d odoo_test --test-enable --stop-after-init \
 
 - **Unit tests**: Student, Course, and Subject model tests
 - **Integration tests**: End-to-end workflow verification
-- **Total**: 30 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, and reports
+- **Total**: 34 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, and security rules
 
 ### Student transcript
 
 Select one or more students from the Students list, open **Print**, and choose
 **Student Transcript**. Odoo generates a QWeb PDF containing the student's
 registration details, status, course, and subjects.
+
+### Security roles
+
+- **Academy Manager** — full student, course, subject, and wizard access.
+- **Academy Teacher** — read/write access without deleting core records.
+- **Academy Student** — read-only access to the student profile linked to their user.
+
+Assign a student's internal user through the **Portal User** field. The student
+record rule then limits that user to their own profile.
 
 ## Linting
 

@@ -44,6 +44,13 @@ class AcademyStudent(models.Model):
         index=True,
     )
 
+    user_id = fields.Many2one(
+        comodel_name="res.users",
+        string="Portal User",
+        help="Internal user who owns this student profile.",
+        ondelete="set null",
+    )
+
     email = fields.Char(
         string="Email Address",
     )
