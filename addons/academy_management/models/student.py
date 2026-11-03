@@ -70,6 +70,17 @@ class AcademyStudent(models.Model):
         string="Gender",
     )
 
+    state = fields.Selection(
+        selection=[
+            ("draft", "Draft"),
+            ("enrolled", "Enrolled"),
+            ("graduated", "Graduated"),
+            ("dropped", "Dropped"),
+        ],
+        string="Status",
+        default="draft",
+    )
+
     active = fields.Boolean(
         string="Active",
         default=True,
@@ -111,3 +122,41 @@ class AcademyStudent(models.Model):
                 vals["student_id"] = sequence
 
         return super().create(vals_list)
+
+    def action_enroll(self):
+        """Enroll the student in their assigned course."""
+        for student in self:
+            if not student.course_id:
+                raise UserError("Please assign a course before enrolling.")
+            enrolled_count = self.search_count(
+                [
+                    ("course_id", "=", student.course_id.id),
+                    ("state", "=", "enrolled"),
+                    ("id", "!=", student.id),
+                ]
+            )
+            if (
+                student.course_id.capacity > 0
+                and enrolled_count >= student.course_id.capacity
+            ):
+                raise UserError("This course is full. Cannot enroll more students.")
+            student.state = "enrolled"
+
+    def action_graduate(self):
+        """Mark the student as graduated."""
+        for student in self:
+            if student.state != "enrolled":
+                raise UserError("Only enrolled students can graduate.")
+            student.state = "graduated"
+
+    def action_drop(self):
+        """Mark the student as dropped."""
+        for student in self:
+            if student.state not in ("enrolled", "draft"):
+                raise UserError("Only draft or enrolled students can be dropped.")
+            student.state = "dropped"
+
+    def action_reset_to_draft(self):
+        """Reset student to draft state."""
+        for student in self:
+            student.state = "draft"

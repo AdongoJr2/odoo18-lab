@@ -63,3 +63,67 @@ class TestAcademyStudent(TransactionCase):
         student = self.Student.create({"name": "Test Student"})
         student.subject_ids = [(4, subject.id)]
         self.assertIn(subject, student.subject_ids)
+
+
+class TestAcademyStudentStateTransitions(TransactionCase):
+    def test_enroll_student(self):
+        """Test student enrollment workflow."""
+        course = self.env["academy.course"].create({"name": "Test Course"})
+        student = self.env["academy.student"].create(
+            {"name": "Test Student", "course_id": course.id}
+        )
+        self.assertEqual(student.state, "draft")
+        student.action_enroll()
+        self.assertEqual(student.state, "enrolled")
+
+    def test_graduate_student(self):
+        """Test student graduation workflow."""
+        course = self.env["academy.course"].create({"name": "Test Course"})
+        student = self.env["academy.student"].create(
+            {"name": "Test Student", "course_id": course.id}
+        )
+        student.action_enroll()
+        student.action_graduate()
+        self.assertEqual(student.state, "graduated")
+
+    def test_drop_student(self):
+        """Test student drop workflow."""
+        course = self.env["academy.course"].create({"name": "Test Course"})
+        student = self.env["academy.student"].create(
+            {"name": "Test Student", "course_id": course.id}
+        )
+        student.action_enroll()
+        student.action_drop()
+        self.assertEqual(student.state, "dropped")
+
+    def test_cannot_enroll_without_course(self):
+        """Test that enrollment requires a course."""
+        student = self.env["academy.student"].create({"name": "Test Student"})
+        with self.assertRaises(Exception):
+            student.action_enroll()
+
+    def test_cannot_enroll_in_full_course(self):
+        """Test that enrollment is blocked when course is full."""
+        course = self.env["academy.course"].create(
+            {"name": "Test Course", "capacity": 1}
+        )
+        student1 = self.env["academy.student"].create(
+            {"name": "Student 1", "course_id": course.id}
+        )
+        student1.action_enroll()
+        student2 = self.env["academy.student"].create(
+            {"name": "Student 2", "course_id": course.id}
+        )
+        with self.assertRaises(Exception):
+            student2.action_enroll()
+
+    def test_reset_to_draft(self):
+        """Test resetting student to draft."""
+        course = self.env["academy.course"].create({"name": "Test Course"})
+        student = self.env["academy.student"].create(
+            {"name": "Test Student", "course_id": course.id}
+        )
+        student.action_enroll()
+        student.action_drop()
+        student.action_reset_to_draft()
+        self.assertEqual(student.state, "draft")

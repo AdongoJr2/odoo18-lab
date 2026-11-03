@@ -12,6 +12,8 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Student management** — registration numbers auto-generated (STU0001, ...),
   name, email, phone, date of birth, computed age, gender, active flag.
 - **Course management** — courses with descriptions and enrolled students.
+- **Enrollment workflow** — draft, enrolled, graduated, and dropped student states.
+- **Course capacity** — computed student counts and enrollment blocking when a course is full.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Access control** — full CRUD for internal users (`base.group_user`).
 
@@ -19,8 +21,8 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 
 | Model | Key fields |
 |---|---|
-| `academy.student` | `student_id` (unique), `name`, `email`, `phone`, `date_of_birth`, `age` (computed), `gender`, `active`, `course_id` (M2one), `subject_ids` (M2many) |
-| `academy.course` | `name`, `description`, `active`, `student_ids` (O2many) |
+| `academy.student` | `student_id` (unique), `name`, `email`, `phone`, `date_of_birth`, `age` (computed), `gender`, `state`, `active`, `course_id` (M2one), `subject_ids` (M2many) |
+| `academy.course` | `name`, `description`, `capacity`, `student_count`, `is_full`, `active`, `student_ids` (O2many) |
 | `academy.subject` | `name`, `description`, `active`, `student_ids` (M2many) |
 
 ## Prerequisites
@@ -98,7 +100,7 @@ docker compose exec odoo odoo -d odoo_test --test-enable --stop-after-init \
 
 - **Unit tests**: Student, Course, and Subject model tests
 - **Integration tests**: End-to-end workflow verification
-- **Total**: 13 tests covering model creation, relationships, constraints, and sequences
+- **Total**: 22 Odoo tests covering model creation, relationships, constraints, sequences, capacity, and workflow transitions
 
 ## Linting
 

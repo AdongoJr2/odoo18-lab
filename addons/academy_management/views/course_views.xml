@@ -8,6 +8,9 @@
         <field name="arch" type="xml">
             <list string="Courses">
                 <field name="name"/>
+                <field name="capacity"/>
+                <field name="student_count"/>
+                <field name="is_full"/>
                 <field name="active"/>
             </list>
         </field>
@@ -29,6 +32,9 @@
 
                     <group>
                         <field name="description"/>
+                        <field name="capacity"/>
+                        <field name="student_count" readonly="1"/>
+                        <field name="is_full" readonly="1"/>
                         <field name="active"/>
 		   </group>
 
