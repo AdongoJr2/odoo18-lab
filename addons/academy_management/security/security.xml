@@ -59,4 +59,18 @@
         <field name="groups" eval="[(4, ref('group_academy_student'))]"/>
         <field name="domain_force">[('student_id.user_id', '=', user.id)]</field>
     </record>
+
+    <!-- Global multi-company rules: they apply to every user and are
+         AND-ed with the per-group rules above. -->
+    <record id="rule_academy_student_company" model="ir.rule">
+        <field name="name">Academy students: multi-company</field>
+        <field name="model_id" ref="model_academy_student"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="rule_academy_attendance_company" model="ir.rule">
+        <field name="name">Academy attendance: multi-company</field>
+        <field name="model_id" ref="model_academy_attendance"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>

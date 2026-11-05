@@ -4,6 +4,7 @@ from . import (
     test_dashboard,
     test_data_files,
     test_integration,
+    test_multi_company,
     test_reports,
     test_security,
     test_student_models,

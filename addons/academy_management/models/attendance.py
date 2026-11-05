@@ -50,6 +50,14 @@ class AcademyAttendance(models.Model):
 
     notes = fields.Text(string="Notes")
 
+    company_id = fields.Many2one(
+        comodel_name="res.company",
+        string="Company",
+        related="student_id.company_id",
+        store=True,
+        readonly=True,
+    )
+
     @api.constrains("student_id", "course_id")
     def _check_student_course(self):
         for attendance in self:

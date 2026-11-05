@@ -94,6 +94,7 @@
 			    <field name="age" readonly="1"/>
                             <field name="gender"/>
                             <field name="active"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </group>
 

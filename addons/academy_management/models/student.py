@@ -94,6 +94,14 @@ class AcademyStudent(models.Model):
         default=True,
     )
 
+    company_id = fields.Many2one(
+        comodel_name="res.company",
+        string="Company",
+        required=True,
+        index=True,
+        default=lambda self: self.env.company,
+    )
+
     @api.depends("date_of_birth")
     def _compute_age(self):
         today = fields.Date.today()
