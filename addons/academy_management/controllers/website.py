@@ -111,6 +111,7 @@ class AcademyWebsiteController(http.Controller):
                 }
             )
         )
+        student.sale_order_id = order
         payment_link = (
             request.env["payment.link.wizard"]
             .sudo()

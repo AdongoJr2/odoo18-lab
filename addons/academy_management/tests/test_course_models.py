@@ -63,6 +63,31 @@ class TestAcademyCourse(TransactionCase):
         course.action_register_invoice_payment()
         self.assertEqual(invoice.payment_state, "paid")
 
+    def test_enrollment_order_confirmation_enrolls_student(self):
+        course = self.env["academy.course"].create(
+            {"name": "Confirmed Course", "price": 50}
+        )
+        student = self.env["academy.student"].create(
+            {"name": "Quotation Student", "course_id": course.id}
+        )
+        order = self.env["sale.order"].create(
+            {
+                "partner_id": self.env.user.partner_id.id,
+                "require_payment": True,
+                "prepayment_percent": 1.0,
+                "order_line": [
+                    (
+                        0,
+                        0,
+                        {"product_id": course.product_id.id, "product_uom_qty": 1},
+                    )
+                ],
+            }
+        )
+        student.sale_order_id = order
+        order.action_confirm()
+        self.assertEqual(student.state, "enrolled")
+
 
 class TestAcademyCourseComputedFields(TransactionCase):
     def test_student_count_computation(self):

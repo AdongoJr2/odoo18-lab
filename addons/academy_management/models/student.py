@@ -106,6 +106,13 @@ class AcademyStudent(models.Model):
         default=lambda self: self.env.company,
     )
 
+    sale_order_id = fields.Many2one(
+        comodel_name="sale.order",
+        string="Enrollment Quotation",
+        readonly=True,
+        copy=False,
+    )
+
     @api.depends("date_of_birth")
     def _compute_age(self):
         today = fields.Date.today()
