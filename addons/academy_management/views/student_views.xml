@@ -84,7 +84,7 @@
                         <group>
                             <field name="email"/>
 			    <field name="phone"/>
-			    <field name="user_id"/>
+			    <field name="user_id" groups="academy_management.group_academy_manager"/>
 			    <field name="course_id"/>
 			    <field name="subject_ids" widget="many2many_tags"/>
                         </group>
@@ -120,6 +120,7 @@
         id="academy_management_menu_root"
         name="Academy Management"
         sequence="10"
+        groups="academy_management.group_academy_manager,academy_management.group_academy_teacher,academy_management.group_academy_student"
     />
 
     <!-- Students Menu -->

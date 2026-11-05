@@ -71,5 +71,6 @@
 
     <menuitem id="academy_dashboard_menu" name="Dashboard"
               parent="academy_management_menu_root"
-              action="academy_dashboard_action" sequence="1"/>
+              action="academy_dashboard_action" sequence="1"
+              groups="academy_management.group_academy_manager,academy_management.group_academy_teacher"/>
 </odoo>

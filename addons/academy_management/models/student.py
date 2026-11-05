@@ -49,6 +49,7 @@ class AcademyStudent(models.Model):
         string="Portal User",
         help="Internal user who owns this student profile.",
         ondelete="set null",
+        groups="academy_management.group_academy_manager",
     )
 
     email = fields.Char(
