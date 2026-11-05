@@ -23,6 +23,8 @@ DEMO_STUDENTS = {
         "phone": "+254700000001",
         "date_of_birth": "2001-03-12",
         "gender": "female",
+        "course": "academy_management.course_demo_python",
+        "state": "enrolled",
     },
     "academy_management.student_demo_2": {
         "name": "Brian Okello",
@@ -30,6 +32,8 @@ DEMO_STUDENTS = {
         "phone": "+254700000002",
         "date_of_birth": "2000-07-25",
         "gender": "male",
+        "course": "academy_management.course_demo_web",
+        "state": "enrolled",
     },
     "academy_management.student_demo_3": {
         "name": "Chloe Martin",
@@ -37,6 +41,8 @@ DEMO_STUDENTS = {
         "phone": "+254700000003",
         "date_of_birth": "2002-01-08",
         "gender": "female",
+        "course": "academy_management.course_demo_data",
+        "state": "enrolled",
     },
     "academy_management.student_demo_4": {
         "name": "Daniel Kim",
@@ -44,6 +50,8 @@ DEMO_STUDENTS = {
         "phone": "+254700000004",
         "date_of_birth": "1999-11-30",
         "gender": "male",
+        "course": "academy_management.course_demo_python",
+        "state": "enrolled",
     },
     "academy_management.student_demo_5": {
         "name": "Elise Fontaine",
@@ -51,6 +59,8 @@ DEMO_STUDENTS = {
         "phone": "+254700000005",
         "date_of_birth": "2001-09-17",
         "gender": "other",
+        "course": None,
+        "state": "draft",
     },
 }
 
@@ -113,12 +123,16 @@ class TestAcademyMasterData(TransactionCase):
             names = [self.env.ref(xml_id).name for xml_id in model_xml_ids]
             self.assertEqual(len(names), len(set(names)))
 
-    def test_seed_courses_have_no_students(self):
+    def test_seed_courses_contain_only_demo_students(self):
+        demo = {self.env.ref(xml_id) for xml_id in DEMO_STUDENTS}
         for xml_id in COURSE_XML_IDS:
             with self.subTest(xml_id=xml_id):
                 course = self.env.ref(xml_id)
-                self.assertEqual(course.student_count, 0)
-                self.assertEqual(course.enrolled_student_count, 0)
+                self.assertTrue(all(s in demo for s in course.student_ids))
+                self.assertEqual(
+                    course.enrolled_student_count,
+                    len(course.student_ids.filtered(lambda s: s.state == "enrolled")),
+                )
                 self.assertFalse(course.is_full)
 
     def test_seeds_visible_in_default_search(self):
@@ -178,10 +192,23 @@ class TestAcademyDemoData(TransactionCase):
                     fields.Date.to_date(expected["date_of_birth"]),
                 )
 
-    def test_demo_students_are_draft(self):
-        for xml_id in DEMO_STUDENTS:
+    def test_demo_student_states_and_courses(self):
+        for xml_id, expected in DEMO_STUDENTS.items():
             with self.subTest(xml_id=xml_id):
-                self.assertEqual(self.env.ref(xml_id).state, "draft")
+                student = self.env.ref(xml_id)
+                self.assertEqual(student.state, expected["state"])
+                if expected["course"]:
+                    self.assertEqual(
+                        student.course_id, self.env.ref(expected["course"])
+                    )
+                else:
+                    self.assertFalse(student.course_id)
+
+    def test_demo_enrollments_respect_capacity(self):
+        for xml_id in COURSE_XML_IDS:
+            with self.subTest(xml_id=xml_id):
+                course = self.env.ref(xml_id)
+                self.assertLessEqual(course.enrolled_student_count, course.capacity)
 
     def test_demo_registration_numbers_use_sequence(self):
         numbers = [self.env.ref(xml_id).student_id for xml_id in DEMO_STUDENTS]
