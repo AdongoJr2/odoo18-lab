@@ -22,6 +22,26 @@ class TestAcademyCourse(TransactionCase):
         )
         self.assertIn(student, course.student_ids)
 
+    def test_course_creates_sellable_service_product(self):
+        course = self.env["academy.course"].create(
+            {"name": "Sales Course", "price": 250}
+        )
+        self.assertTrue(course.product_id)
+        self.assertEqual(course.product_id.name, "Sales Course")
+        self.assertEqual(course.product_id.type, "service")
+        self.assertTrue(course.product_id.sale_ok)
+        self.assertEqual(course.price, 250)
+
+        course.name = "Updated Sales Course"
+        self.assertEqual(course.product_id.name, "Updated Sales Course")
+
+        sales_action = course.action_open_sales()
+        self.assertEqual(sales_action["res_model"], "sale.order")
+        self.assertIn(
+            ("order_line.product_id", "=", course.product_id.id),
+            sales_action["domain"],
+        )
+
 
 class TestAcademyCourseComputedFields(TransactionCase):
     def test_student_count_computation(self):

@@ -33,9 +33,14 @@
                     <group>
                         <field name="description"/>
                         <field name="capacity"/>
+                        <field name="price"/>
+                        <field name="product_id" readonly="1"/>
                         <field name="student_count" readonly="1"/>
                         <field name="is_full" readonly="1"/>
                         <field name="active"/>
+
+                        <button name="action_open_sales" type="object"
+                                string="View Sales Orders" class="btn btn-outline-primary"/>
 		   </group>
 
 		   <notebook>
