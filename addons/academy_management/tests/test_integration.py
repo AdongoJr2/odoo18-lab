@@ -1,7 +1,7 @@
 from odoo.tests import HttpCase, tagged
 
 
-@tagged("post_install", "integration")
+@tagged("-at_install", "post_install", "integration")
 class TestAcademyIntegration(HttpCase):
     """Integration tests for the Academy Management module."""
 
