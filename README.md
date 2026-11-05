@@ -18,6 +18,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Attendance tracking** — daily present, absent, late, and excused records with calendar and list views.
 - **Academy dashboard** — student, enrollment, course-capacity, and attendance KPIs with drill-down actions.
 - **Subject management** — subjects linked to students (many-to-many).
+- **Seed & demo data** — master courses/subjects plus enrolled demo students for instant evaluation.
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules.
 
 ## Data model
@@ -58,7 +59,8 @@ odoo18-lab/
 │   ├── models/                  # student, course, subject
 │   ├── views/                   # list & form views + menus
 │   ├── security/                # access rights (CSV)
-│   ├── data/                    # student sequence
+│   ├── data/                    # master seed data + student sequence
+│   ├── demo/                    # demo students (CSV, install only)
 │   ├── reports/                 # QWeb transcript report
 │   ├── wizard/                  # bulk enrollment wizard
 │   └── tests/                   # unit & integration tests
@@ -107,6 +109,32 @@ Logs:
 docker compose logs -f odoo
 ```
 
+## Module data
+
+The addon ships two kinds of data files, declared in `__manifest__.py`:
+
+- **`data/academy_data.xml`** — master seed data (3 courses, 4 subjects) wrapped
+  in `<data noupdate="1">` so upgrades never clobber local edits. Capacities use
+  `eval="25"` to store integers instead of strings. Loaded on install *and*
+  upgrade.
+- **`demo/academy.student.csv`** — 5 demo students, 4 of them enrolled in seed
+  courses. Loaded only when the database is created **with demo data** and only
+  on install (never on upgrade).
+
+Rules worth remembering for CSV data files:
+
+- The filename must be the model name: `academy.student.csv` loads into
+  `academy.student` (the loader does `filename.split('-')[0]`, so
+  `academy.student-batch2.csv` also works). A name like `students_demo.csv`
+  fails with `KeyError`.
+- Many-to-one columns that reference records by XML ID need the `:id` suffix
+  (`course_id:id`); without it the value is treated as a display name and
+  looked up with `name_search`.
+- The loader forces `noupdate=True` for CSV files (demo and init alike), since
+  CSV cannot express the flag the way `<data noupdate="0">` can.
+- Demo CSV rows omit `student_id`; the `create()` override assigns the next
+  sequence number (STU0001, ...) so demo rows never collide with the sequence.
+
 ## Testing
 
 ### Run tests with Docker
@@ -128,7 +156,8 @@ docker compose exec odoo odoo -d odoo_test --test-enable \
 
 - **Unit tests**: Student, Course, and Subject model tests
 - **Integration tests**: End-to-end workflow verification
-- **Total**: 41 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, security rules, attendance, and dashboard KPIs
+- **Data-file tests**: master seed data (XML) and demo student CSV integrity
+- **Total**: 56 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, security rules, attendance, dashboard KPIs, and data files
 
 ### Student transcript
 
