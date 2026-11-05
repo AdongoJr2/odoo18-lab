@@ -88,6 +88,16 @@ class TestAcademyCourse(TransactionCase):
         order.action_confirm()
         self.assertEqual(student.state, "enrolled")
 
+    def test_demo_payment_outcome_methods_are_available(self):
+        transaction = self.env["payment.transaction"].search(
+            [("provider_id.code", "=", "test")], limit=1
+        )
+        if not transaction:
+            self.skipTest("Demo payment transaction is created by the payment UI")
+        self.assertTrue(hasattr(transaction, "action_demo_set_done"))
+        self.assertTrue(hasattr(transaction, "action_demo_set_error"))
+        self.assertTrue(hasattr(transaction, "action_demo_set_canceled"))
+
 
 class TestAcademyCourseComputedFields(TransactionCase):
     def test_student_count_computation(self):
