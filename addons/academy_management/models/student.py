@@ -113,6 +113,13 @@ class AcademyStudent(models.Model):
         copy=False,
     )
 
+    crm_lead_id = fields.Many2one(
+        comodel_name="crm.lead",
+        string="Admissions Opportunity",
+        readonly=True,
+        copy=False,
+    )
+
     @api.depends("date_of_birth")
     def _compute_age(self):
         today = fields.Date.today()

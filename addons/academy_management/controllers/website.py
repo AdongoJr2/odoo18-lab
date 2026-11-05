@@ -112,6 +112,24 @@ class AcademyWebsiteController(http.Controller):
             )
         )
         student.sale_order_id = order
+        lead = (
+            request.env["crm.lead"]
+            .sudo()
+            .create(
+                {
+                    "name": f"Course enrollment: {course.name}",
+                    "type": "opportunity",
+                    "partner_id": partner.id,
+                    "contact_name": name,
+                    "email_from": email,
+                    "phone": post.get("phone"),
+                    "course_id": course.id,
+                    "student_id": student.id,
+                    "sale_order_id": order.id,
+                }
+            )
+        )
+        student.crm_lead_id = lead
         payment_link = (
             request.env["payment.link.wizard"]
             .sudo()

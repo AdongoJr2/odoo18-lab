@@ -17,6 +17,7 @@
     "depends": [
         "account",
         "base",
+        "crm",
         "mail",
         "product",
         "sale",
@@ -38,6 +39,7 @@
         "reports/student_transcript_templates.xml",
         "reports/student_transcript_reports.xml",
         "views/academy_website_templates.xml",
+        "views/crm_lead_views.xml",
     ],
     "assets": {
         "web.assets_backend": [

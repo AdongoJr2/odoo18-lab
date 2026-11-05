@@ -84,6 +84,11 @@ class AcademyCourse(models.Model):
         help="Customer used when creating a course invoice.",
     )
 
+    crm_lead_count = fields.Integer(
+        string="Admissions Opportunities",
+        compute="_compute_crm_lead_count",
+    )
+
     invoice_id = fields.Many2one(
         comodel_name="account.move",
         string="Latest Invoice",
@@ -121,6 +126,15 @@ class AcademyCourse(models.Model):
             course.is_full = (
                 course.capacity > 0 and course.enrolled_student_count >= course.capacity
             )
+
+    def _compute_crm_lead_count(self):
+        counts = dict(
+            self.env["crm.lead"].read_group(
+                [("course_id", "in", self.ids)], ["course_id"], ["course_id"]
+            )
+        )
+        for course in self:
+            course.crm_lead_count = counts.get(course.id, 0)
 
     @api.model_create_multi
     def create(self, vals_list):
