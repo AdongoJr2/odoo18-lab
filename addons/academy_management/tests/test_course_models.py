@@ -63,7 +63,7 @@ class TestAcademyCourse(TransactionCase):
         course.action_register_invoice_payment()
         self.assertEqual(invoice.payment_state, "paid")
 
-    def test_enrollment_order_confirmation_enrolls_student(self):
+    def test_enrollment_order_confirmation_does_not_enroll_student(self):
         course = self.env["academy.course"].create(
             {"name": "Confirmed Course", "price": 50}
         )
@@ -86,6 +86,28 @@ class TestAcademyCourse(TransactionCase):
         )
         student.sale_order_id = order
         order.action_confirm()
+        self.assertEqual(student.state, "draft")
+
+    def test_successful_payment_enrolls_linked_student(self):
+        course = self.env["academy.course"].create({"name": "Paid Course", "price": 50})
+        student = self.env["academy.student"].create(
+            {"name": "Paid Student", "course_id": course.id}
+        )
+        order = self.env["sale.order"].create(
+            {
+                "partner_id": self.env.user.partner_id.id,
+                "order_line": [
+                    (0, 0, {"product_id": course.product_id.id, "product_uom_qty": 1})
+                ],
+            }
+        )
+        student.sale_order_id = order
+        transaction = self.env["payment.transaction"].new(
+            {"state": "done", "sale_order_ids": order.ids}
+        )
+        self.env["academy.student"].search(
+            [("sale_order_id", "in", transaction.sale_order_ids.ids)]
+        ).action_enroll()
         self.assertEqual(student.state, "enrolled")
 
     def test_demo_payment_outcome_methods_are_available(self):
