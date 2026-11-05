@@ -17,7 +17,6 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Student transcripts** — printable QWeb PDF reports with enrollment and subject details.
 - **Attendance tracking** — daily present, absent, late, and excused records with calendar and list views.
 - **Academy dashboard** — student, enrollment, course-capacity, and attendance KPIs with drill-down actions.
-- **Academy dashboard** — student, enrollment, course-capacity, and attendance KPIs with drill-down actions.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules.
 
@@ -61,7 +60,7 @@ odoo18-lab/
 │   ├── security/                # access rights (CSV)
 │   ├── data/                    # student sequence
 │   ├── reports/                 # QWeb transcript report
-│   └── wizard/                  # bulk enrollment wizard
+│   ├── wizard/                  # bulk enrollment wizard
 │   └── tests/                   # unit & integration tests
 ├── config/odoo.conf             # Odoo configuration
 ├── docker-compose.yml           # Postgres 16 + Odoo 18
@@ -76,12 +75,31 @@ odoo18-lab/
 ## Development
 
 The addon is mounted into the container at `/mnt/extra-addons`, so code changes
-are picked up after restarting Odoo or updating the module:
+are picked up by restarting Odoo and upgrading the module.
+
+**Upgrade via CLI** (recommended after changing models, views, security, or
+data files — this syncs the PostgreSQL schema with the Python registry; skip it
+and you get errors like `column academy_course.capacity does not exist`):
+
+```bash
+# Dev database
+docker compose exec odoo odoo -d odoo18_dev --stop-after-init \
+  --update=academy_management --http-port=8099
+
+# Test database
+docker compose exec odoo odoo -d odoo_test --stop-after-init \
+  --update=academy_management --http-port=8099
+```
+
+`--http-port=8099` avoids clashing with the server already listening on 8069.
+Restart the long-running server afterwards so it reloads the registry:
 
 ```bash
 docker compose restart odoo
-# then in Odoo: Apps → Update Apps List → Upgrade "Academy Management"
 ```
+
+**Upgrade via UI**: `docker compose restart odoo`, then in Odoo:
+Apps → Update Apps List → Upgrade "Academy Management".
 
 Logs:
 
@@ -95,11 +113,14 @@ docker compose logs -f odoo
 
 ```bash
 # Create a fresh test database
+docker compose exec db psql -U odoo -d postgres -c \
+  "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname='odoo_test';"
 docker compose exec db psql -U odoo -d postgres -c "DROP DATABASE IF EXISTS odoo_test;"
 docker compose exec db psql -U odoo -d postgres -c "CREATE DATABASE odoo_test OWNER odoo;"
 
-# Run Odoo tests
-docker compose exec odoo odoo -d odoo_test --test-enable --stop-after-init \
+# Run Odoo tests (scoped to this addon to avoid base-module failures)
+docker compose exec odoo odoo -d odoo_test --test-enable \
+  --test-tags /academy_management --stop-after-init \
   --init=academy_management --http-port=8099
 ```
 
@@ -129,11 +150,6 @@ record rule then limits that user to their own profile.
 Open **Academy Management → Attendance** to record daily attendance. Each entry
 must match the student's course, and duplicate entries for the same student and
 date are rejected. Attendance is available in calendar, list, and form views.
-
-### Dashboard
-
-Open **Academy Management → Dashboard** for live KPI cards. The cards link to
-the underlying Students, Courses, Attendance, and Attendance Analysis views.
 
 ### Dashboard
 
@@ -187,8 +203,10 @@ pre-commit run --all-files
 GitHub Actions automatically runs on every push to `main` and pull requests:
 
 - **Linting**: ruff, black, isort, mypy
-- **Testing**: Odoo test suite with PostgreSQL service
 - **Python versions**: 3.10
+
+Odoo tests run locally via Docker (see [Testing](#testing)); the Odoo image is
+not pip-installable, so CI does not execute the test suite.
 
 View workflow: [GitHub Actions](https://github.com/AdongoJr2/odoo18-lab/actions)
 
@@ -205,5 +223,3 @@ To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 This project is licensed under the GNU Lesser General Public License v3.0 — see
 [LICENSE](LICENSE). The addon itself declares `LGPL-3` in its manifest.
-EOF
-echo "README updated"
