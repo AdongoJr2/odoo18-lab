@@ -9,4 +9,14 @@
         <field name="binding_model_id" ref="model_academy_student"/>
         <field name="binding_type">report</field>
     </record>
+
+    <record id="action_report_course_roster" model="ir.actions.report">
+        <field name="name">Course Roster</field>
+        <field name="model">academy.course</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">academy_management.report_course_roster</field>
+        <field name="report_file">academy_management.report_course_roster</field>
+        <field name="binding_model_id" ref="model_academy_course"/>
+        <field name="binding_type">report</field>
+    </record>
 </odoo>

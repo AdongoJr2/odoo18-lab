@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <template id="report_student_identity">
+        <tr>
+            <th>Student</th>
+            <td>
+                <span t-field="student.name"/>
+                <span class="text-muted"> (<t t-esc="student.student_id"/>)</span>
+            </td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td><span t-field="student.state"/></td>
+        </tr>
+    </template>
+
     <template id="report_student_transcript_document">
         <t t-call="web.external_layout">
             <t t-foreach="docs" t-as="student">
@@ -53,6 +67,10 @@
                         </tbody>
                     </table>
 
+                    <table class="table table-sm">
+                        <t t-call="academy_management.report_student_identity"/>
+                    </table>
+
                     <p class="text-muted mt-5">
                         Generated from Academy Management.
                     </p>
@@ -65,6 +83,48 @@
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="student">
                 <t t-call="academy_management.report_student_transcript_document"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_course_roster_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Course Roster: <span t-field="course.name"/></h2>
+                <p t-if="course.description" t-field="course.description"/>
+                <t t-if="course.student_ids">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Registration Number</th>
+                                <th>Student</th>
+                                <th>Status</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="course.student_ids" t-as="student">
+                                <tr>
+                                    <td><span t-field="student.student_id"/></td>
+                                    <td><span t-field="student.name"/></td>
+                                    <td><span t-field="student.state"/></td>
+                                    <td><span t-field="student.email"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </t>
+                <t t-else="">
+                    <p class="text-muted">No students are assigned to this course yet.</p>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_course_roster">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="course">
+                <t t-call="academy_management.report_course_roster_document"/>
             </t>
         </t>
     </template>
