@@ -36,3 +36,15 @@ class TestAcademyWebsite(TransactionCase):
         self.assertTrue(
             self.env.ref("academy_management.academy_website_enrollment_success")
         )
+
+    def test_enrollment_route_payment_link_is_available(self):
+        order = self.env["sale.order"].create(
+            {
+                "partner_id": self.env.user.partner_id.id,
+                "require_payment": True,
+                "prepayment_percent": 1.0,
+            }
+        )
+        values = order._get_default_payment_link_values()
+        self.assertEqual(values["amount"], order.amount_total)
+        self.assertEqual(values["amount_max"], order.amount_total)

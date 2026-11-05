@@ -151,6 +151,7 @@
                     <h1 class="display-3 fw-bold">Thanks, <t t-esc="student.name"/>.</h1>
                     <p class="lead">Your request for <strong><t t-esc="course.name"/></strong> has been received.</p>
                     <p class="text-muted">We will follow up at <t t-esc="student.email"/> with the course quotation.</p>
+                    <a t-if="payment_link" t-att-href="payment_link" class="btn btn-primary btn-lg mt-3">Pay course fee</a>
                     <a href="/academy/courses" class="btn btn-primary btn-lg mt-3">Explore more courses</a>
                 </div>
             </div>

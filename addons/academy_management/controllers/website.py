@@ -89,23 +89,41 @@ class AcademyWebsiteController(http.Controller):
                 "course_id": course.id,
             }
         )
-        request.env["sale.order"].sudo().create(
-            {
-                "partner_id": partner.id,
-                "order_line": [
-                    (
-                        0,
-                        0,
-                        {
-                            "product_id": course.product_id.id,
-                            "product_uom_qty": 1,
-                            "price_unit": course.price,
-                        },
-                    )
-                ],
-            }
+        order = (
+            request.env["sale.order"]
+            .sudo()
+            .create(
+                {
+                    "partner_id": partner.id,
+                    "require_payment": True,
+                    "prepayment_percent": 1.0,
+                    "order_line": [
+                        (
+                            0,
+                            0,
+                            {
+                                "product_id": course.product_id.id,
+                                "product_uom_qty": 1,
+                                "price_unit": course.price,
+                            },
+                        )
+                    ],
+                }
+            )
+        )
+        payment_link = (
+            request.env["payment.link.wizard"]
+            .sudo()
+            .create(
+                {
+                    "res_model": "sale.order",
+                    "res_id": order.id,
+                    **order._get_default_payment_link_values(),
+                }
+            )
+            .link
         )
         return request.render(
             "academy_management.academy_website_enrollment_success",
-            {"student": student, "course": course},
+            {"student": student, "course": course, "payment_link": payment_link},
         )
