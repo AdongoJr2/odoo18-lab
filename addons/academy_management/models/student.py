@@ -195,3 +195,10 @@ class AcademyStudent(models.Model):
         """Reset student to draft state."""
         for student in self:
             student.state = "draft"
+
+    def action_open_crm_leads(self):
+        self.ensure_one()
+        action = self.env.ref("crm.crm_lead_action_pipeline").read()[0]
+        action.pop("id", None)
+        action["domain"] = [("student_id", "=", self.id)]
+        return action

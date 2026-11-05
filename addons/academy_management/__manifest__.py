@@ -52,6 +52,7 @@
     },
     "demo": [
         "demo/academy.student.csv",
+        "demo/academy_crm_leads.xml",
     ],
     "installable": True,
     "application": True,

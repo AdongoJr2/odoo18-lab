@@ -5,6 +5,14 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_open_academy_student" type="object"
+                        string="Student" class="oe_stat_button" invisible="not student_id"/>
+                <button name="action_open_academy_course" type="object"
+                        string="Course" class="oe_stat_button" invisible="not course_id"/>
+                <button name="action_open_enrollment_order" type="object"
+                        string="Quotation" class="oe_stat_button" invisible="not sale_order_id"/>
+            </xpath>
             <xpath expr="//field[@name='team_id']" position="after">
                 <field name="course_id"/>
                 <field name="student_id"/>
@@ -12,4 +20,32 @@
             </xpath>
         </field>
     </record>
+
+    <record id="crm_lead_view_list_academy" model="ir.ui.view">
+        <field name="name">crm.lead.list.academy</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="course_id" optional="show"/>
+                <field name="student_id" optional="show"/>
+                <field name="sale_order_id" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_view_kanban_academy" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.academy</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="course_id"/>
+                <field name="student_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem id="academy_admissions_menu" name="Admissions" parent="academy_management_menu_root"
+              action="crm.crm_lead_action_pipeline" sequence="5"/>
 </odoo>

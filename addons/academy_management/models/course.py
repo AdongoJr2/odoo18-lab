@@ -170,6 +170,13 @@ class AcademyCourse(models.Model):
         action["domain"] = [("order_line.product_id", "=", self.product_id.id)]
         return action
 
+    def action_open_crm_leads(self):
+        self.ensure_one()
+        action = self.env.ref("crm.crm_lead_action_pipeline").read()[0]
+        action.pop("id", None)
+        action["domain"] = [("course_id", "=", self.id)]
+        return action
+
     def action_create_invoice(self):
         self.ensure_one()
         if not self.customer_id:

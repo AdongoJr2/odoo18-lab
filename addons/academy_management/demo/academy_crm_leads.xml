@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_demo_partner_inquiry" model="res.partner">
+        <field name="name">CRM Demo Applicant</field>
+        <field name="email">crm-demo-applicant@example.com</field>
+    </record>
+
+    <record id="crm_demo_student_inquiry" model="academy.student">
+        <field name="name">CRM Demo Applicant</field>
+        <field name="email">crm-demo-applicant@example.com</field>
+        <field name="course_id" ref="academy_management.course_demo_python"/>
+    </record>
+
+    <record id="crm_demo_lead_inquiry" model="crm.lead">
+        <field name="name">New Academy Inquiry</field>
+        <field name="type">opportunity</field>
+        <field name="partner_id" ref="crm_demo_partner_inquiry"/>
+        <field name="contact_name">CRM Demo Applicant</field>
+        <field name="email_from">crm-demo-applicant@example.com</field>
+        <field name="course_id" ref="academy_management.course_demo_python"/>
+        <field name="student_id" ref="crm_demo_student_inquiry"/>
+        <field name="team_id" ref="academy_management.crm_team_academy_admissions"/>
+        <field name="stage_id" ref="academy_management.crm_stage_academy_new_inquiry"/>
+    </record>
+</odoo>

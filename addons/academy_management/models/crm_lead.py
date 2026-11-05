@@ -19,3 +19,15 @@ class AcademyCrmLead(models.Model):
         string="Enrollment Quotation",
         readonly=True,
     )
+
+    def action_open_academy_student(self):
+        self.ensure_one()
+        return self.student_id.get_formview_action() if self.student_id else False
+
+    def action_open_academy_course(self):
+        self.ensure_one()
+        return self.course_id.get_formview_action() if self.course_id else False
+
+    def action_open_enrollment_order(self):
+        self.ensure_one()
+        return self.sale_order_id.get_formview_action() if self.sale_order_id else False
