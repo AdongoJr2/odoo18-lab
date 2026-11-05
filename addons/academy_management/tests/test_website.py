@@ -63,6 +63,12 @@ class TestAcademyWebsite(TransactionCase):
         self.assertEqual(lead.student_id, student)
         self.assertEqual(lead.sale_order_id, order)
 
+    def test_admissions_pipeline_action_is_course_scoped(self):
+        action = self.env.ref("academy_management.academy_admissions_action")
+        self.assertEqual(action.res_model, "crm.lead")
+        self.assertIn("team_id", action.domain)
+        self.assertTrue(self.env.ref("academy_management.crm_team_academy_admissions"))
+
     def test_enrollment_route_payment_link_is_available(self):
         order = self.env["sale.order"].create(
             {

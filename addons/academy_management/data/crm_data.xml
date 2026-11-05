@@ -32,4 +32,5 @@
         <field name="team_id" ref="crm_team_academy_admissions"/>
         <field name="is_won">True</field>
     </record>
+
 </odoo>

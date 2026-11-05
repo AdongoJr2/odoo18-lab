@@ -21,6 +21,39 @@
         </field>
     </record>
 
+    <record id="crm_lead_view_search_academy" model="ir.ui.view">
+        <field name="name">crm.lead.search.academy</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='stage_id']" position="after">
+                <field name="course_id" string="Academy Course"/>
+                <field name="student_id" string="Academy Student"/>
+            </xpath>
+            <xpath expr="//filter[@name='open_opportunities']" position="after">
+                <filter string="Academy Admissions" name="academy_admissions"
+                        domain="[('team_id', '=', 5)]"/>
+                <filter string="Payment Pending" name="academy_payment_pending"
+                        domain="[('stage_id', '=', 8)]"/>
+            </xpath>
+            <xpath expr="//group" position="inside">
+                <filter string="Academy Course" name="academy_course" context="{'group_by': 'course_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="academy_admissions_action" model="ir.actions.act_window">
+        <field name="name">Admissions Pipeline</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('team_id', '=', ref('academy_management.crm_team_academy_admissions'))]</field>
+        <field name="context">{'default_team_id': ref('academy_management.crm_team_academy_admissions'), 'default_type': 'opportunity'}</field>
+        <field name="search_view_id" ref="crm.view_crm_case_opportunities_filter"/>
+    </record>
+
+    <menuitem id="academy_admissions_pipeline_menu" name="Admissions Pipeline"
+              parent="academy_management_menu_root" action="academy_admissions_action" sequence="6"/>
+
     <record id="crm_lead_view_list_academy" model="ir.ui.view">
         <field name="name">crm.lead.list.academy</field>
         <field name="model">crm.lead</field>
