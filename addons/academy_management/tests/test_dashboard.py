@@ -16,12 +16,26 @@ class TestAcademyDashboard(TransactionCase):
 
         dashboard = self.env["academy.dashboard"].create({})
 
-        self.assertEqual(dashboard.total_students, 1)
-        self.assertEqual(dashboard.enrolled_students, 1)
-        self.assertEqual(dashboard.total_courses, 1)
-        self.assertEqual(dashboard.full_courses, 1)
-        self.assertEqual(dashboard.attendance_records, 1)
-        self.assertEqual(dashboard.attendance_rate, 100)
+        students = self.env["academy.student"].search([])
+        courses = self.env["academy.course"].search([])
+        attendance = self.env["academy.attendance"].search([])
+        present = attendance.filtered(lambda record: record.status == "present")
+
+        self.assertEqual(dashboard.total_students, len(students))
+        self.assertEqual(
+            dashboard.enrolled_students,
+            len(students.filtered(lambda s: s.state == "enrolled")),
+        )
+        self.assertEqual(dashboard.total_courses, len(courses))
+        self.assertEqual(dashboard.full_courses, len(courses.filtered("is_full")))
+        self.assertEqual(dashboard.attendance_records, len(attendance))
+        expected_rate = len(present) / len(attendance) * 100 if attendance else 0
+        self.assertAlmostEqual(dashboard.attendance_rate, expected_rate, places=1)
+
+        self.assertIn(student, students)
+        self.assertIn(course, courses)
+        self.assertTrue(course.is_full)
+        self.assertGreaterEqual(dashboard.full_courses, 1)
 
     def test_dashboard_actions_are_configured(self):
         dashboard = self.env["academy.dashboard"].create({})
