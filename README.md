@@ -19,16 +19,16 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Academy dashboard** — student, enrollment, course-capacity, and attendance KPIs with drill-down actions.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Seed & demo data** — master courses/subjects plus enrolled demo students for instant evaluation.
-- **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules.
+- **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules, menu/field restrictions, and multi-company siloing.
 
 ## Data model
 
 | Model | Key fields |
 |---|---|
-| `academy.student` | `student_id` (unique), `name`, `email`, `phone`, `user_id`, `date_of_birth`, `age` (computed), `gender`, `state`, `active`, `course_id` (M2one), `subject_ids` (M2many) |
+| `academy.student` | `student_id` (unique), `name`, `email`, `phone`, `user_id` (managers only), `date_of_birth`, `age` (computed), `gender`, `state`, `active`, `company_id`, `course_id` (M2one), `subject_ids` (M2many) |
 | `academy.course` | `name`, `description`, `capacity`, `student_count`, `is_full`, `active`, `student_ids` (O2many) |
 | `academy.subject` | `name`, `description`, `active`, `student_ids` (M2many) |
-| `academy.attendance` | `student_id`, `course_id`, `attendance_date`, `status`, `notes`; unique per student and date |
+| `academy.attendance` | `student_id`, `course_id`, `attendance_date`, `status`, `notes`, `company_id` (from student); unique per student and date |
 
 ## Prerequisites
 
@@ -157,7 +157,7 @@ docker compose exec odoo odoo -d odoo_test --test-enable \
 - **Unit tests**: Student, Course, and Subject model tests
 - **Integration tests**: End-to-end workflow verification
 - **Data-file tests**: master seed data (XML) and demo student CSV integrity
-- **Total**: 56 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, security rules, attendance, dashboard KPIs, and data files
+- **Total**: 67 Odoo tests covering model creation, relationships, constraints, sequences, capacity, workflows, wizards, reports, security rules, multi-company rules, attendance, dashboard KPIs, and data files
 
 ### Student transcript
 
@@ -165,14 +165,41 @@ Select one or more students from the Students list, open **Print**, and choose
 **Student Transcript**. Odoo generates a QWeb PDF containing the student's
 registration details, status, course, and subjects.
 
-### Security roles
+### Security
 
-- **Academy Manager** — full student, course, subject, and wizard access.
-- **Academy Teacher** — read/write access without deleting core records.
-- **Academy Student** — read-only access to the student profile linked to their user.
+The security model follows Odoo's layered approach (groups → ACLs → record
+rules → visibility), mirroring the official *Restrict access to data* tutorial:
 
-Assign a student's internal user through the **Portal User** field. The student
-record rule then limits that user to their own profile.
+- **Groups** (`security/security.xml`) — *Academy Manager*, *Academy Teacher*,
+  and *Academy Student*, all implying `base.group_user` and categorized under
+  Education. The manager group implies the teacher group, so managers inherit
+  every teacher-level rule and access right.
+- **Access rights** (`security/ir.model.access.csv`) — managers get full CRUD;
+  teachers get read/write/create but never delete; students get read-only
+  access to students, courses, subjects, and their own attendance. The bulk
+  enrollment wizard and dashboard are staff-only (students have no ACL).
+- **Record rules** — teachers and managers see all students and attendance;
+  students are limited to the profile linked to their user (and that profile's
+  attendance). Two **global** multi-company rules additionally restrict
+  `academy.student` and `academy.attendance` to the companies the current user
+  belongs to (`company_id in company_ids`), so each branch/campus is siloed.
+  Courses and subjects are intentionally **shared** across companies (catalog
+  data, like products in Odoo's own multi-company apps).
+- **Visibility ≠ security** — the Academy root menu requires one of the three
+  groups (plain internal users see no Academy app at all), the Dashboard menu
+  is staff-only, the Bulk Enroll action is staff-only, and the **Portal User**
+  field is restricted to managers both in Python (`groups=` on the field) and
+  in the form view. These hide UI elements but are not security boundaries;
+  the ACLs and record rules above enforce actual access.
+- **No security bypasses** — business code never calls `sudo()`; the wizard,
+  reports, and workflow buttons all run with the caller's rights, so the ORM
+  access checks apply everywhere.
+
+After installing on a fresh database, add yourself to **Academy Manager**
+(Settings → Users) to see the Academy app.
+
+Assign a student's internal user through the **Portal User** field (managers
+only). The student record rule then limits that user to their own profile.
 
 ### Attendance tracking
 
