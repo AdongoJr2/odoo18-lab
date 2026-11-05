@@ -78,4 +78,8 @@
               parent="academy_management_menu_root"
               action="academy_dashboard_client_action" sequence="1"
               groups="academy_management.group_academy_manager,academy_management.group_academy_teacher"/>
+
+    <record id="academy_management_menu_root" model="ir.ui.menu">
+        <field name="action" ref="academy_dashboard_client_action"/>
+    </record>
 </odoo>

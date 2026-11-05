@@ -78,6 +78,12 @@ class AcademyCourse(models.Model):
         index=True,
     )
 
+    customer_id = fields.Many2one(
+        comodel_name="res.partner",
+        string="Invoice Customer",
+        help="Customer used when creating a course invoice.",
+    )
+
     @api.depends("student_ids")
     def _compute_student_count(self):
         for course in self:
@@ -130,3 +136,40 @@ class AcademyCourse(models.Model):
         action.pop("id", None)
         action["domain"] = [("order_line.product_id", "=", self.product_id.id)]
         return action
+
+    def action_create_invoice(self):
+        self.ensure_one()
+        if not self.customer_id:
+            return {
+                "type": "ir.actions.act_window",
+                "name": "Select Invoice Customer",
+                "res_model": "academy.course",
+                "view_mode": "form",
+                "res_id": self.id,
+                "target": "current",
+            }
+        invoice = self.env["account.move"].create(
+            {
+                "move_type": "out_invoice",
+                "partner_id": self.customer_id.id,
+                "invoice_line_ids": [
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": self.product_id.id,
+                            "quantity": 1,
+                            "price_unit": self.price,
+                        },
+                    )
+                ],
+            }
+        )
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Course Invoice",
+            "res_model": "account.move",
+            "view_mode": "form",
+            "res_id": invoice.id,
+            "target": "current",
+        }

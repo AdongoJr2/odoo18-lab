@@ -35,12 +35,15 @@
                         <field name="capacity"/>
                         <field name="price"/>
                         <field name="product_id" readonly="1"/>
+                        <field name="customer_id"/>
                         <field name="student_count" readonly="1"/>
                         <field name="is_full" readonly="1"/>
                         <field name="active"/>
 
                         <button name="action_open_sales" type="object"
                                 string="View Sales Orders" class="btn btn-outline-primary"/>
+                        <button name="action_create_invoice" type="object"
+                                string="Create Invoice" class="btn btn-outline-secondary"/>
 		   </group>
 
 		   <notebook>

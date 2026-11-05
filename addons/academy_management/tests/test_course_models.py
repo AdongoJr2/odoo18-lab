@@ -42,6 +42,22 @@ class TestAcademyCourse(TransactionCase):
             sales_action["domain"],
         )
 
+    def test_course_creates_customer_invoice(self):
+        customer = self.env["res.partner"].create({"name": "Course Customer"})
+        course = self.env["academy.course"].create(
+            {
+                "name": "Invoice Course",
+                "price": 125,
+                "customer_id": customer.id,
+            }
+        )
+        action = course.action_create_invoice()
+        invoice = self.env["account.move"].browse(action["res_id"])
+        self.assertEqual(invoice.move_type, "out_invoice")
+        self.assertEqual(invoice.partner_id, customer)
+        self.assertEqual(invoice.invoice_line_ids.product_id, course.product_id)
+        self.assertEqual(invoice.invoice_line_ids.price_unit, 125)
+
 
 class TestAcademyCourseComputedFields(TransactionCase):
     def test_student_count_computation(self):
