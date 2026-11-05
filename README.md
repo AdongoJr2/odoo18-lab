@@ -17,6 +17,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Student transcripts** — printable QWeb PDF reports with enrollment and subject details.
 - **Attendance tracking** — daily present, absent, late, and excused records with calendar and list views.
 - **Academy dashboard** — student, enrollment, course-capacity, and attendance KPIs with drill-down actions.
+- **OWL dashboard** — a reactive client action loads live statistics through a protected JSON route and links to standard Academy actions.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Seed & demo data** — master courses/subjects plus enrolled demo students for instant evaluation.
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules, menu/field restrictions, and multi-company siloing.
@@ -65,6 +66,8 @@ odoo18-lab/
 │   ├── demo/                    # demo students (CSV, install only)
 │   ├── reports/                 # QWeb transcript report
 │   ├── wizard/                  # bulk enrollment wizard
+│   ├── controllers/             # authenticated dashboard statistics route
+│   ├── static/                  # OWL dashboard assets
 │   └── tests/                   # unit & integration tests
 ├── addons/academy_catalog/      # XML-only data module example
 │   ├── models/                  # ir.model and ir.model.fields records

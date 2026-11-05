@@ -51,6 +51,11 @@ class TestAcademyDashboard(TransactionCase):
             "academy.attendance",
         )
 
+    def test_owl_dashboard_client_action_is_registered(self):
+        action = self.env.ref("academy_management.academy_dashboard_client_action")
+        self.assertEqual(action.tag, "academy_management.dashboard")
+        self.assertEqual(action.type, "ir.actions.client")
+
     def test_attendance_analysis_view_has_graph_and_pivot(self):
         action = self.env.ref("academy_management.academy_attendance_analysis_action")
         self.assertEqual(action.view_mode, "graph,pivot,list")

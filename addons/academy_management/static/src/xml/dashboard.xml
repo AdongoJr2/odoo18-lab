@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="academy_management.AcademyDashboard">
+        <div class="o_academy_dashboard p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-1">Academy Pulse</h1>
+                    <p class="text-muted mb-0">Live enrollment and attendance overview</p>
+                </div>
+                <button class="btn btn-primary" t-on-click="openStudents">View Students</button>
+            </div>
+            <t t-if="state.loading">
+                <div class="alert alert-info">Loading academy statistics...</div>
+            </t>
+            <t t-elif="state.error">
+                <div class="alert alert-danger">The dashboard statistics could not be loaded.</div>
+            </t>
+            <t t-else="">
+                <div class="row g-3 mb-4">
+                    <t t-foreach="[
+                        ['Students', state.statistics.total_students, 'primary'],
+                        ['Enrolled', state.statistics.enrolled_students, 'success'],
+                        ['Courses', state.statistics.total_courses, 'info'],
+                        ['Full Courses', state.statistics.full_courses, 'warning'],
+                        ['Attendance', state.statistics.attendance_records, 'secondary'],
+                        ['Present Rate', state.statistics.attendance_rate.toFixed(1) + '%', 'dark']
+                    ]" t-as="metric" t-key="metric[0]">
+                        <div class="col-12 col-sm-6 col-xl-4">
+                            <div t-attf-class="card border-{{ metric[2] }} h-100">
+                                <div class="card-body">
+                                    <div class="text-muted small"><t t-esc="metric[0]"/></div>
+                                    <div class="fs-2 fw-bold"><t t-esc="metric[1]"/></div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong>Course Capacity</strong>
+                        <button class="btn btn-sm btn-outline-primary" t-on-click="openCourses">Open Courses</button>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <t t-foreach="state.statistics.courses" t-as="course" t-key="course.id">
+                            <div class="list-group-item d-flex justify-content-between">
+                                <span><t t-esc="course.name"/></span>
+                                <span class="text-muted"><t t-esc="course.enrolled"/> / <t t-esc="course.capacity"/></span>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+                <button class="btn btn-link px-0 mt-3" t-on-click="openAttendance">Open Attendance</button>
+            </t>
+        </div>
+    </t>
+</templates>

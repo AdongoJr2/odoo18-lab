@@ -29,6 +29,13 @@
         "reports/student_transcript_templates.xml",
         "reports/student_transcript_reports.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "academy_management/static/src/js/dashboard.js",
+            "academy_management/static/src/xml/dashboard.xml",
+            "academy_management/static/src/scss/dashboard.scss",
+        ],
+    },
     "demo": [
         "demo/academy.student.csv",
     ],
