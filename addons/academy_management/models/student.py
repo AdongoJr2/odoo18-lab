@@ -6,6 +6,7 @@ class AcademyStudent(models.Model):
     _name = "academy.student"
     _description = "Academy Student"
     _order = "name"
+    _inherit = ["mail.thread", "mail.activity.mixin"]
 
     _sql_constraints = [
         (
@@ -28,6 +29,7 @@ class AcademyStudent(models.Model):
         comodel_name="academy.course",
         string="Course",
         ondelete="restrict",
+        tracking=True,
     )
 
     subject_ids = fields.Many2many(
@@ -42,6 +44,7 @@ class AcademyStudent(models.Model):
         string="Student Name",
         required=True,
         index=True,
+        tracking=True,
     )
 
     user_id = fields.Many2one(
@@ -87,6 +90,7 @@ class AcademyStudent(models.Model):
         ],
         string="Status",
         default="draft",
+        tracking=True,
     )
 
     active = fields.Boolean(

@@ -20,6 +20,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Subject management** — subjects linked to students (many-to-many).
 - **Seed & demo data** — master courses/subjects plus enrolled demo students for instant evaluation.
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules, menu/field restrictions, and multi-company siloing.
+- **Student collaboration** — student records inherit Odoo's chatter and activity mixins, with tracking for name, course, and status changes.
 - **XML data module** — `academy_catalog` demonstrates an importable-style module with models, fields, defaults, views, and ACLs defined entirely in XML/CSV.
 
 ## Data model

@@ -66,6 +66,38 @@ class TestAcademyStudent(TransactionCase):
         student.subject_ids = [(4, subject.id)]
         self.assertIn(subject, student.subject_ids)
 
+    def test_student_changes_are_tracked_in_chatter(self):
+        student = self.Student.create({"name": "Original Name"})
+        self.env.cr.precommit.run()
+        student.write({"name": "Updated Name"})
+        self.env.cr.precommit.run()
+        message = self.env["mail.message"].search(
+            [
+                ("model", "=", "academy.student"),
+                ("res_id", "=", student.id),
+                ("tracking_value_ids", "!=", False),
+            ],
+            order="id desc",
+            limit=1,
+        )
+        self.assertTrue(message)
+        tracking = message.tracking_value_ids
+        self.assertEqual(
+            tracking.field_id.display_name, "Student Name (Academy Student)"
+        )
+        self.assertEqual(tracking.new_value_char, "Updated Name")
+
+    def test_student_can_schedule_activity(self):
+        student = self.Student.create({"name": "Activity Student"})
+        activity_type = self.env.ref("mail.mail_activity_data_todo")
+        activity = student.activity_schedule(
+            activity_type_id=activity_type.id,
+            summary="Review enrollment",
+        )
+        self.assertEqual(activity.res_model, "academy.student")
+        self.assertEqual(activity.res_id, student.id)
+        self.assertEqual(activity.summary, "Review enrollment")
+
 
 class TestAcademyStudentStateTransitions(TransactionCase):
     def test_enroll_student(self):

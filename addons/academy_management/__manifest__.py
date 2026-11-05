@@ -14,7 +14,7 @@
     "category": "Education",
     "author": "Moses Adongo",
     "license": "LGPL-3",
-    "depends": ["base", "web"],
+    "depends": ["base", "mail", "web"],
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
