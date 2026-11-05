@@ -5,16 +5,19 @@
             <field name="name">Intro to Python</field>
             <field name="description">Core Python programming: syntax, control flow, functions, and object-oriented basics.</field>
             <field name="capacity" eval="25"/>
+            <field name="price" eval="150.0"/>
         </record>
         <record id="course_demo_web" model="academy.course">
             <field name="name">Web Development Basics</field>
             <field name="description">HTML, CSS, and JavaScript fundamentals for building modern web pages.</field>
             <field name="capacity" eval="20"/>
+            <field name="price" eval="200.0"/>
         </record>
         <record id="course_demo_data" model="academy.course">
             <field name="name">Data Science Fundamentals</field>
             <field name="description">Introduction to data analysis with statistics, visualization, and tooling.</field>
             <field name="capacity" eval="15"/>
+            <field name="price" eval="180.0"/>
         </record>
 
         <record id="subject_prog_basics" model="academy.subject">
