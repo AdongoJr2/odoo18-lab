@@ -58,6 +58,11 @@ class TestAcademyCourse(TransactionCase):
         self.assertEqual(invoice.invoice_line_ids.product_id, course.product_id)
         self.assertEqual(invoice.invoice_line_ids.price_unit, 125)
 
+        course.action_post_invoice()
+        self.assertEqual(invoice.state, "posted")
+        course.action_register_invoice_payment()
+        self.assertEqual(invoice.payment_state, "paid")
+
 
 class TestAcademyCourseComputedFields(TransactionCase):
     def test_student_count_computation(self):

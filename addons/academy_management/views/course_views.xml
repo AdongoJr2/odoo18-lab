@@ -36,6 +36,9 @@
                         <field name="price"/>
                         <field name="product_id" readonly="1"/>
                         <field name="customer_id"/>
+                        <field name="invoice_id" readonly="1"/>
+                        <field name="invoice_state" readonly="1"/>
+                        <field name="invoice_payment_state" readonly="1"/>
                         <field name="student_count" readonly="1"/>
                         <field name="is_full" readonly="1"/>
                         <field name="active"/>
@@ -44,6 +47,15 @@
                                 string="View Sales Orders" class="btn btn-outline-primary"/>
                         <button name="action_create_invoice" type="object"
                                 string="Create Invoice" class="btn btn-outline-secondary"/>
+                        <button name="action_open_invoice" type="object"
+                                string="Open Invoice" class="btn btn-outline-secondary"
+                                invisible="not invoice_id"/>
+                        <button name="action_post_invoice" type="object"
+                                string="Post Invoice" class="btn btn-outline-warning"
+                                invisible="not invoice_id or invoice_state != 'draft'"/>
+                        <button name="action_register_invoice_payment" type="object"
+                                string="Register Payment" class="btn btn-outline-success"
+                                invisible="not invoice_id or invoice_state != 'posted' or invoice_payment_state == 'paid'"/>
 		   </group>
 
 		   <notebook>

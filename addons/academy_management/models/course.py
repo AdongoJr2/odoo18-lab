@@ -84,6 +84,25 @@ class AcademyCourse(models.Model):
         help="Customer used when creating a course invoice.",
     )
 
+    invoice_id = fields.Many2one(
+        comodel_name="account.move",
+        string="Latest Invoice",
+        compute="_compute_invoice_id",
+        search="_search_invoice_id",
+    )
+
+    invoice_state = fields.Selection(
+        related="invoice_id.state",
+        string="Invoice Status",
+        readonly=True,
+    )
+
+    invoice_payment_state = fields.Selection(
+        related="invoice_id.payment_state",
+        string="Payment Status",
+        readonly=True,
+    )
+
     @api.depends("student_ids")
     def _compute_student_count(self):
         for course in self:
@@ -173,3 +192,59 @@ class AcademyCourse(models.Model):
             "res_id": invoice.id,
             "target": "current",
         }
+
+    def _compute_invoice_id(self):
+        invoices = self.env["account.move"].search(
+            [
+                ("move_type", "=", "out_invoice"),
+                ("invoice_line_ids.product_id", "in", self.mapped("product_id").ids),
+            ],
+            order="invoice_date desc, id desc",
+        )
+        for course in self:
+            course.invoice_id = invoices.filtered(
+                lambda invoice: course.product_id in invoice.invoice_line_ids.product_id
+            )[:1]
+
+    def _search_invoice_id(self, operator, value):
+        invoices = self.env["account.move"].search(
+            [("id", operator, value)] if operator in ("=", "!=") else []
+        )
+        return [("product_id", "in", invoices.invoice_line_ids.product_id.ids)]
+
+    def action_open_invoice(self):
+        self.ensure_one()
+        if not self.invoice_id:
+            return self.action_create_invoice()
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Course Invoice",
+            "res_model": "account.move",
+            "view_mode": "form",
+            "res_id": self.invoice_id.id,
+            "target": "current",
+        }
+
+    def action_post_invoice(self):
+        self.ensure_one()
+        if not self.invoice_id:
+            self.action_create_invoice()
+        if self.invoice_id.state == "draft":
+            self.invoice_id.action_post()
+        return self.action_open_invoice()
+
+    def action_register_invoice_payment(self):
+        self.ensure_one()
+        if not self.invoice_id:
+            self.action_create_invoice()
+        if self.invoice_id.state == "draft":
+            self.invoice_id.action_post()
+        return (
+            self.env["account.payment.register"]
+            .with_context(
+                active_model="account.move",
+                active_ids=self.invoice_id.ids,
+            )
+            .create({})
+            .action_create_payments()
+        )

@@ -55,6 +55,8 @@ class TestAcademyDashboard(TransactionCase):
         action = self.env.ref("academy_management.academy_dashboard_client_action")
         self.assertEqual(action.tag, "academy_management.dashboard")
         self.assertEqual(action.type, "ir.actions.client")
+        root = self.env.ref("academy_management.academy_management_menu_root")
+        self.assertEqual(root.action, action)
 
     def test_attendance_analysis_view_has_graph_and_pivot(self):
         action = self.env.ref("academy_management.academy_attendance_analysis_action")
