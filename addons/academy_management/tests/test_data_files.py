@@ -1,3 +1,4 @@
+from odoo import fields
 from odoo.tests import TransactionCase
 
 COURSE_XML_IDS = (
@@ -14,6 +15,44 @@ SUBJECT_XML_IDS = (
 )
 
 ALL_XML_IDS = COURSE_XML_IDS + SUBJECT_XML_IDS
+
+DEMO_STUDENTS = {
+    "academy_management.student_demo_1": {
+        "name": "Amina Yusuf",
+        "email": "amina.yusuf@example.com",
+        "phone": "+254700000001",
+        "date_of_birth": "2001-03-12",
+        "gender": "female",
+    },
+    "academy_management.student_demo_2": {
+        "name": "Brian Okello",
+        "email": "brian.okello@example.com",
+        "phone": "+254700000002",
+        "date_of_birth": "2000-07-25",
+        "gender": "male",
+    },
+    "academy_management.student_demo_3": {
+        "name": "Chloe Martin",
+        "email": "chloe.martin@example.com",
+        "phone": "+254700000003",
+        "date_of_birth": "2002-01-08",
+        "gender": "female",
+    },
+    "academy_management.student_demo_4": {
+        "name": "Daniel Kim",
+        "email": "daniel.kim@example.com",
+        "phone": "+254700000004",
+        "date_of_birth": "1999-11-30",
+        "gender": "male",
+    },
+    "academy_management.student_demo_5": {
+        "name": "Elise Fontaine",
+        "email": "elise.fontaine@example.com",
+        "phone": "+254700000005",
+        "date_of_birth": "2001-09-17",
+        "gender": "other",
+    },
+}
 
 
 class TestAcademyMasterData(TransactionCase):
@@ -93,3 +132,88 @@ class TestAcademyMasterData(TransactionCase):
     def test_unknown_xml_id_raises(self):
         with self.assertRaises(ValueError):
             self.env.ref("academy_management.course_does_not_exist")
+
+
+class TestAcademyDemoData(TransactionCase):
+    """Demo students loaded from demo/academy.student.csv."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        names = [xml_id.partition(".")[2] for xml_id in DEMO_STUDENTS]
+        found = (
+            cls.env["ir.model.data"]
+            .sudo()
+            .search_count(
+                [
+                    ("module", "=", "academy_management"),
+                    ("name", "in", names),
+                ]
+            )
+        )
+        cls.has_demo_data = found == len(names)
+
+    def setUp(self):
+        super().setUp()
+        if not self.has_demo_data:
+            self.skipTest("demo data not loaded (database installed without demo)")
+
+    def test_demo_students_loaded(self):
+        for xml_id in DEMO_STUDENTS:
+            with self.subTest(xml_id=xml_id):
+                student = self.env.ref(xml_id)
+                self.assertEqual(student._name, "academy.student")
+                self.assertTrue(student.active)
+
+    def test_demo_student_field_values(self):
+        for xml_id, expected in DEMO_STUDENTS.items():
+            with self.subTest(xml_id=xml_id):
+                student = self.env.ref(xml_id)
+                self.assertEqual(student.name, expected["name"])
+                self.assertEqual(student.email, expected["email"])
+                self.assertEqual(student.phone, expected["phone"])
+                self.assertEqual(student.gender, expected["gender"])
+                self.assertEqual(
+                    student.date_of_birth,
+                    fields.Date.to_date(expected["date_of_birth"]),
+                )
+
+    def test_demo_students_are_draft(self):
+        for xml_id in DEMO_STUDENTS:
+            with self.subTest(xml_id=xml_id):
+                self.assertEqual(self.env.ref(xml_id).state, "draft")
+
+    def test_demo_registration_numbers_use_sequence(self):
+        numbers = [self.env.ref(xml_id).student_id for xml_id in DEMO_STUDENTS]
+        for number in numbers:
+            with self.subTest(student_id=number):
+                self.assertRegex(number, r"^STU\d{4}$")
+        self.assertEqual(len(numbers), len(set(numbers)))
+
+    def test_sequence_continues_after_demo_data(self):
+        """New students must not collide with demo registration numbers."""
+        demo_numbers = {self.env.ref(xml_id).student_id for xml_id in DEMO_STUDENTS}
+        student = self.env["academy.student"].create({"name": "Post-Demo Student"})
+        self.assertRegex(student.student_id, r"^STU\d{4}$")
+        self.assertNotIn(student.student_id, demo_numbers)
+
+    def test_demo_csv_records_are_noupdate(self):
+        """Odoo's loader forces noupdate=True for CSV files.
+
+        XML demo data can opt out with ``<data noupdate="0">`` (as Odoo
+        core does), but CSV files cannot express the flag, so the
+        loader always sets it for both demo and init CSV imports.
+        """
+        for xml_id in DEMO_STUDENTS:
+            with self.subTest(xml_id=xml_id):
+                module, _, name = xml_id.partition(".")
+                imd = (
+                    self.env["ir.model.data"]
+                    .sudo()
+                    .search(
+                        [("module", "=", module), ("name", "=", name)],
+                        limit=2,
+                    )
+                )
+                self.assertEqual(len(imd), 1)
+                self.assertTrue(imd.noupdate)

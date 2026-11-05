@@ -1,0 +1,6 @@
+id,name,email,phone,date_of_birth,gender,state
+student_demo_1,Amina Yusuf,amina.yusuf@example.com,+254700000001,2001-03-12,female,draft
+student_demo_2,Brian Okello,brian.okello@example.com,+254700000002,2000-07-25,male,draft
+student_demo_3,Chloe Martin,chloe.martin@example.com,+254700000003,2002-01-08,female,draft
+student_demo_4,Daniel Kim,daniel.kim@example.com,+254700000004,1999-11-30,male,draft
+student_demo_5,Elise Fontaine,elise.fontaine@example.com,+254700000005,2001-09-17,other,draft

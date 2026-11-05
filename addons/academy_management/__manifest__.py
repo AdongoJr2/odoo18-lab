@@ -29,6 +29,9 @@
         "reports/student_transcript_templates.xml",
         "reports/student_transcript_reports.xml",
     ],
+    "demo": [
+        "demo/academy.student.csv",
+    ],
     "installable": True,
     "application": True,
 }
