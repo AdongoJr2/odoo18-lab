@@ -1,5 +1,7 @@
 .PHONY: lint lint-fix test-focused test-focused-update test-docker install pre-commit
 
+MODULE ?= academy_management
+
 lint:
 	ruff check .
 	black --check .
@@ -15,11 +17,12 @@ lint-fix:
 # the full suite and the module update, so it is the fastest feedback loop for
 # Python-only changes.
 # Usage: make test-focused FILES="test_attendance.py test_student_models.py"
+#        make test-focused MODULE=academy_catalog FILES="test_catalog_course.py"
 test-focused:
 	@test -n "$(FILES)" || (echo 'Usage: make test-focused FILES="test_file.py ..."'; exit 1)
 	@status=0; for file in $(FILES); do \
 		docker compose exec odoo odoo -d odoo_test \
-		  --test-file=/mnt/extra-addons/academy_management/tests/$$file \
+		  --test-file=/mnt/extra-addons/$(MODULE)/tests/$$file \
 		  --stop-after-init --http-port=8099 || status=1; \
 	done; exit $$status
 
@@ -29,8 +32,8 @@ test-focused:
 test-focused-update:
 	@test -n "$(FILES)" || (echo 'Usage: make test-focused-update FILES="test_file.py ..."'; exit 1)
 	@status=0; for file in $(FILES); do \
-		docker compose exec odoo odoo -d odoo_test -u academy_management \
-		  --test-file=/mnt/extra-addons/academy_management/tests/$$file \
+		docker compose exec odoo odoo -d odoo_test -u $(MODULE) \
+		  --test-file=/mnt/extra-addons/$(MODULE)/tests/$$file \
 		  --stop-after-init --http-port=8099 || status=1; \
 	done; exit $$status
 

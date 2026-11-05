@@ -20,6 +20,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Subject management** — subjects linked to students (many-to-many).
 - **Seed & demo data** — master courses/subjects plus enrolled demo students for instant evaluation.
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules, menu/field restrictions, and multi-company siloing.
+- **XML data module** — `academy_catalog` demonstrates an importable-style module with models, fields, defaults, views, and ACLs defined entirely in XML/CSV.
 
 ## Data model
 
@@ -64,6 +65,11 @@ odoo18-lab/
 │   ├── reports/                 # QWeb transcript report
 │   ├── wizard/                  # bulk enrollment wizard
 │   └── tests/                   # unit & integration tests
+├── addons/academy_catalog/      # XML-only data module example
+│   ├── models/                  # ir.model and ir.model.fields records
+│   ├── views/                   # XML-defined model UI
+│   ├── security/                # ACLs for the dynamic model
+│   └── tests/                   # data-module tests
 ├── config/odoo.conf             # Odoo configuration
 ├── docker-compose.yml           # Postgres 16 + Odoo 18
 ├── .pre-commit-config.yaml     # Pre-commit hooks
@@ -72,6 +78,33 @@ odoo18-lab/
 ├── .gitignore
 ├── LICENSE                      # LGPL-3.0
 └── README.md
+```
+
+## XML Data Modules
+
+Tutorial 4 introduces importable-style modules that define Odoo models through
+XML data instead of Python classes. The small `academy_catalog` addon is the
+project's equivalent example:
+
+- `models/catalog_course.xml` creates `x_academy.catalog.course` through an
+  `ir.model` record, then defines its `x_` fields through `ir.model.fields`.
+- `ir.default` records provide static defaults for capacity and active status.
+- The manifest loads model definitions before ACLs and views, because XML data
+  files are processed sequentially.
+- `security/ir.model.access.csv` and `views/catalog_course_views.xml` work the
+  same way as in a conventional Python module.
+
+This approach is useful when a hosting environment accepts module archives but
+does not allow custom Python deployment. Its tradeoffs are verbosity and
+limited business logic: computed fields, constraints, dynamic defaults, and
+complex workflows still belong in a normal Python module such as
+`academy_management`.
+
+Install and test it in Docker with:
+
+```bash
+docker compose exec odoo odoo -d odoo_test -i academy_catalog \
+  --test-enable --test-tags /academy_catalog --stop-after-init --http-port=8099
 ```
 
 ## Development
@@ -149,6 +182,9 @@ make test-focused FILES="test_attendance.py test_student_models.py"
 
 # Use this when module data, views, security records, or schema changed
 make test-focused-update FILES="test_security.py"
+
+# The same target can run the XML-only data module tests
+make test-focused MODULE=academy_catalog FILES="test_catalog_course.py"
 ```
 
 Relevant test files are grouped by area:
