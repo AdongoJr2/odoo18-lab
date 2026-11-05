@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="academy_website_home" name="Academy website home">
+        <t t-call="website.layout">
+            <div id="wrap" class="academy-site">
+                <section class="academy-hero">
+                    <div class="container py-5">
+                        <div class="row align-items-center g-5 py-lg-5">
+                            <div class="col-lg-7">
+                                <p class="academy-eyebrow">ACADEMY MANAGEMENT</p>
+                                <h1 class="display-2 fw-bold">Learn something that moves you forward.</h1>
+                                <p class="lead mt-4 mb-4">
+                                    Practical courses, thoughtful mentors, and a learning community built for curious people.
+                                </p>
+                                <a href="#academy-courses" class="btn btn-lg btn-light px-4">Explore courses</a>
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="academy-hero-card">
+                                    <span class="academy-card-label">THIS WEEK</span>
+                                    <strong>Build your next skill</strong>
+                                    <span>Small steps. Real progress.</span>
+                                    <div class="academy-orbit academy-orbit-one"></div>
+                                    <div class="academy-orbit academy-orbit-two"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="academy-courses" class="academy-courses py-5">
+                    <div class="container py-lg-4">
+                        <div class="d-flex justify-content-between align-items-end mb-4">
+                            <div>
+                                <p class="academy-eyebrow text-primary">THE CATALOG</p>
+                                <h2 class="display-5 fw-bold mb-0">Courses with momentum.</h2>
+                            </div>
+                            <span class="text-muted d-none d-md-block"><t t-esc="len(courses)"/> active courses</span>
+                        </div>
+                        <div class="row g-4">
+                            <t t-foreach="courses" t-as="course">
+                                <div class="col-md-6 col-lg-4">
+                                    <article class="academy-course-card h-100">
+                                        <div class="academy-course-number">0<t t-esc="course_index + 1"/></div>
+                                        <h3><t t-esc="course.name"/></h3>
+                                        <p t-if="course.description" class="text-muted"><t t-esc="course.description"/></p>
+                                        <p t-else="" class="text-muted">A focused path for building useful skills.</p>
+                                        <div class="academy-course-meta mt-auto">
+                                            <span><t t-esc="course.enrolled_student_count"/> enrolled</span>
+                                            <span><t t-esc="course.capacity"/> seats</span>
+                                        </div>
+                                    </article>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="academy-invite py-5">
+                    <div class="container py-lg-4">
+                        <div class="row align-items-center g-4">
+                            <div class="col-lg-8">
+                                <p class="academy-eyebrow">MAKE ROOM FOR GROWTH</p>
+                                <h2 class="display-6 fw-bold">Your next chapter can start today.</h2>
+                            </div>
+                            <div class="col-lg-4 text-lg-end">
+                                <a href="#academy-courses" class="btn btn-primary btn-lg">See the catalog</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,117 @@
+.academy-site {
+    --academy-ink: #17211f;
+    --academy-sage: #c9e6d3;
+    --academy-coral: #f06c4e;
+    color: var(--academy-ink);
+}
+
+.academy-hero {
+    overflow: hidden;
+    background: var(--academy-ink);
+    color: #fff;
+}
+
+.academy-hero h1 {
+    max-width: 760px;
+    letter-spacing: -0.045em;
+}
+
+.academy-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+}
+
+.academy-hero-card {
+    position: relative;
+    min-height: 330px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    padding: 2rem;
+    border-radius: 2rem;
+    background: var(--academy-sage);
+    color: var(--academy-ink);
+}
+
+.academy-hero-card strong {
+    position: relative;
+    z-index: 1;
+    max-width: 12rem;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.academy-card-label {
+    position: relative;
+    z-index: 1;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.academy-orbit {
+    position: absolute;
+    border: 2px solid rgba(23, 33, 31, 0.25);
+    border-radius: 50%;
+    transform: rotate(-24deg);
+}
+
+.academy-orbit-one {
+    width: 27rem;
+    height: 12rem;
+    top: 2rem;
+    right: -5rem;
+}
+
+.academy-orbit-two {
+    width: 20rem;
+    height: 9rem;
+    top: 4rem;
+    right: -2rem;
+}
+
+.academy-courses {
+    background: #f7f5ef;
+}
+
+.academy-course-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.75rem;
+    border: 1px solid rgba(23, 33, 31, 0.12);
+    border-radius: 1.25rem;
+    background: #fff;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.academy-course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1rem 2rem rgba(23, 33, 31, 0.1);
+}
+
+.academy-course-number {
+    margin-bottom: 3rem;
+    color: var(--academy-coral);
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+
+.academy-course-card h3 {
+    font-size: 1.45rem;
+}
+
+.academy-course-meta {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(23, 33, 31, 0.1);
+    color: #60706c;
+    font-size: 0.85rem;
+}
+
+.academy-invite {
+    background: var(--academy-sage);
+}

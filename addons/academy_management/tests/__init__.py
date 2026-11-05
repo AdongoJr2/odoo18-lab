@@ -9,5 +9,6 @@ from . import (
     test_security,
     test_student_models,
     test_subject_models,
+    test_website,
     test_wizards,
 )

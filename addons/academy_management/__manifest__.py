@@ -14,7 +14,7 @@
     "category": "Education",
     "author": "Moses Adongo",
     "license": "LGPL-3",
-    "depends": ["base", "mail", "web"],
+    "depends": ["base", "mail", "web", "website"],
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
@@ -28,12 +28,14 @@
         "wizard/bulk_enrollment_views.xml",
         "reports/student_transcript_templates.xml",
         "reports/student_transcript_reports.xml",
+        "views/academy_website_templates.xml",
     ],
     "assets": {
         "web.assets_backend": [
             "academy_management/static/src/js/dashboard.js",
             "academy_management/static/src/xml/dashboard.xml",
             "academy_management/static/src/scss/dashboard.scss",
+            "academy_management/static/src/scss/academy_website.scss",
         ],
     },
     "demo": [
