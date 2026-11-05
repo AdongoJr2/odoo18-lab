@@ -20,6 +20,14 @@ class AcademyDashboardController(http.Controller):
         courses = request.env["academy.course"].search([], order="name", limit=5)
         attendance = request.env["academy.attendance"].search([])
         present = len(attendance.filtered(lambda record: record.status == "present"))
+        course_products = request.env["academy.course"].search([]).mapped("product_id")
+        invoices = request.env["account.move"].search(
+            [
+                ("move_type", "=", "out_invoice"),
+                ("company_id", "=", request.env.company.id),
+                ("invoice_line_ids.product_id", "in", course_products.ids),
+            ]
+        )
         return {
             "total_students": len(students),
             "enrolled_students": len(
@@ -31,6 +39,21 @@ class AcademyDashboardController(http.Controller):
             ),
             "attendance_records": len(attendance),
             "attendance_rate": present / len(attendance) * 100 if attendance else 0,
+            "finance": {
+                "invoiced": sum(invoices.mapped("amount_total")),
+                "posted": sum(
+                    invoices.filtered(lambda invoice: invoice.state == "posted").mapped(
+                        "amount_total"
+                    )
+                ),
+                "paid": sum(
+                    invoices.filtered(
+                        lambda invoice: invoice.payment_state == "paid"
+                    ).mapped("amount_total")
+                ),
+                "outstanding": sum(invoices.mapped("amount_residual")),
+                "currency": request.env.company.currency_id.symbol,
+            },
             "courses": [
                 {
                     "id": course.id,

@@ -49,6 +49,29 @@
                         </t>
                     </div>
                 </div>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <strong>Finance Snapshot</strong>
+                    </div>
+                    <div class="row g-0">
+                        <t t-foreach="[
+                            ['Invoiced', state.statistics.finance.invoiced, 'primary'],
+                            ['Posted', state.statistics.finance.posted, 'info'],
+                            ['Paid', state.statistics.finance.paid, 'success'],
+                            ['Outstanding', state.statistics.finance.outstanding, 'warning']
+                        ]" t-as="finance_metric" t-key="finance_metric[0]">
+                            <div class="col-12 col-sm-6 col-xl-3">
+                                <div class="p-3 border-end">
+                                    <div class="text-muted small"><t t-esc="finance_metric[0]"/></div>
+                                    <div t-attf-class="fs-4 fw-bold text-{{ finance_metric[2] }}">
+                                        <t t-esc="state.statistics.finance.currency"/>
+                                        <t t-esc="finance_metric[1].toFixed(2)"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
                 <button class="btn btn-link px-0 mt-3" t-on-click="openAttendance">Open Attendance</button>
             </t>
         </div>

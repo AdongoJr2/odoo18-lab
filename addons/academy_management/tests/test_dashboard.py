@@ -37,6 +37,22 @@ class TestAcademyDashboard(TransactionCase):
         self.assertTrue(course.is_full)
         self.assertGreaterEqual(dashboard.full_courses, 1)
 
+    def test_dashboard_finance_totals_include_course_invoice(self):
+        customer = self.env["res.partner"].create({"name": "Dashboard Customer"})
+        course = self.env["academy.course"].create(
+            {
+                "name": "Finance Dashboard Course",
+                "price": 90,
+                "customer_id": customer.id,
+            }
+        )
+        course.action_create_invoice()
+
+        invoice = course.invoice_id
+        self.assertEqual(invoice.amount_untaxed, 90)
+        self.assertGreater(invoice.amount_total, invoice.amount_untaxed)
+        self.assertEqual(invoice.move_type, "out_invoice")
+
     def test_dashboard_actions_are_configured(self):
         dashboard = self.env["academy.dashboard"].create({})
 
