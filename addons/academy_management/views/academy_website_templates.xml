@@ -12,7 +12,7 @@
                                 <p class="lead mt-4 mb-4">
                                     Practical courses, thoughtful mentors, and a learning community built for curious people.
                                 </p>
-                                <a href="#academy-courses" class="btn btn-lg btn-light px-4">Explore courses</a>
+                                <a href="/academy/courses" class="btn btn-lg btn-light px-4">Explore courses</a>
                             </div>
                             <div class="col-lg-5">
                                 <div class="academy-hero-card">
@@ -34,14 +34,14 @@
                                 <p class="academy-eyebrow text-primary">THE CATALOG</p>
                                 <h2 class="display-5 fw-bold mb-0">Courses with momentum.</h2>
                             </div>
-                            <span class="text-muted d-none d-md-block"><t t-esc="len(courses)"/> active courses</span>
+                            <a href="/academy/courses" class="text-muted d-none d-md-block"><t t-esc="len(courses)"/> active courses</a>
                         </div>
                         <div class="row g-4">
                             <t t-foreach="courses" t-as="course">
                                 <div class="col-md-6 col-lg-4">
                                     <article class="academy-course-card h-100">
                                         <div class="academy-course-number">0<t t-esc="course_index + 1"/></div>
-                                        <h3><t t-esc="course.name"/></h3>
+                                        <h3><a t-att-href="'/academy/course/%s' % course.id"><t t-esc="course.name"/></a></h3>
                                         <p t-if="course.description" class="text-muted"><t t-esc="course.description"/></p>
                                         <p t-else="" class="text-muted">A focused path for building useful skills.</p>
                                         <div class="academy-course-meta mt-auto">
@@ -63,11 +63,96 @@
                                 <h2 class="display-6 fw-bold">Your next chapter can start today.</h2>
                             </div>
                             <div class="col-lg-4 text-lg-end">
-                                <a href="#academy-courses" class="btn btn-primary btn-lg">See the catalog</a>
+                                <a href="/academy/courses" class="btn btn-primary btn-lg">See the catalog</a>
                             </div>
                         </div>
                     </div>
                 </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="academy_website_courses" name="Academy course catalog">
+        <t t-call="website.layout">
+            <div id="wrap" class="academy-site academy-catalog-page">
+                <section class="academy-catalog-heading py-5">
+                    <div class="container">
+                        <p class="academy-eyebrow text-primary">THE CATALOG</p>
+                        <h1 class="display-3 fw-bold">Choose your next direction.</h1>
+                    </div>
+                </section>
+                <section class="academy-courses py-5">
+                    <div class="container">
+                        <div class="row g-4">
+                            <t t-foreach="courses" t-as="course">
+                                <div class="col-md-6 col-lg-4">
+                                    <article class="academy-course-card h-100">
+                                        <div class="academy-course-number">0<t t-esc="course_index + 1"/></div>
+                                        <h2><a t-att-href="'/academy/course/%s' % course.id"><t t-esc="course.name"/></a></h2>
+                                        <p class="text-muted"><t t-esc="course.description or 'A focused path for building useful skills.'"/></p>
+                                        <a class="btn btn-outline-primary mt-auto" t-att-href="'/academy/course/%s' % course.id">View course</a>
+                                    </article>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="academy_website_course_detail" name="Academy course detail">
+        <t t-call="website.layout">
+            <div id="wrap" class="academy-site academy-detail-page">
+                <section class="academy-detail-hero py-5">
+                    <div class="container py-lg-4">
+                        <a href="/academy/courses" class="text-muted">← Back to courses</a>
+                        <h1 class="display-3 fw-bold mt-4"><t t-esc="course.name"/></h1>
+                        <p class="lead col-lg-8"><t t-esc="course.description or 'A focused path for building useful skills.'"/></p>
+                        <div class="academy-course-meta col-lg-6 mt-4">
+                            <span><t t-esc="course.enrolled_student_count"/> enrolled</span>
+                            <span><t t-esc="course.capacity"/> seats</span>
+                            <span><t t-esc="course.price"/> <t t-esc="course.currency_id.symbol"/></span>
+                        </div>
+                    </div>
+                </section>
+                <section class="academy-enrollment py-5">
+                    <div class="container">
+                        <div class="row g-5">
+                            <div class="col-lg-5">
+                                <p class="academy-eyebrow text-primary">START HERE</p>
+                                <h2 class="display-6 fw-bold">Reserve your place.</h2>
+                                <p class="text-muted">Tell us where to send your course quotation and enrollment details.</p>
+                                <div t-if="error == 'full'" class="alert alert-warning">This course is currently full.</div>
+                                <div t-if="error == 'duplicate'" class="alert alert-warning">This email is already enrolled in this course.</div>
+                                <div t-if="error == 'required'" class="alert alert-danger">Name and email are required.</div>
+                            </div>
+                            <div class="col-lg-7">
+                                <form t-att-action="'/academy/course/%s/enroll' % course.id" method="post" class="academy-enrollment-form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <div class="mb-3"><label class="form-label" for="academy-name">Full name</label><input id="academy-name" name="name" class="form-control form-control-lg" required="required"/></div>
+                                    <div class="mb-3"><label class="form-label" for="academy-email">Email</label><input id="academy-email" type="email" name="email" class="form-control form-control-lg" required="required"/></div>
+                                    <div class="mb-4"><label class="form-label" for="academy-phone">Phone</label><input id="academy-phone" name="phone" class="form-control form-control-lg"/></div>
+                                    <button type="submit" class="btn btn-primary btn-lg">Request enrollment</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <template id="academy_website_enrollment_success" name="Academy enrollment success">
+        <t t-call="website.layout">
+            <div id="wrap" class="academy-site academy-success-page py-5">
+                <div class="container py-lg-5 text-center">
+                    <p class="academy-eyebrow text-primary">YOU ARE ON YOUR WAY</p>
+                    <h1 class="display-3 fw-bold">Thanks, <t t-esc="student.name"/>.</h1>
+                    <p class="lead">Your request for <strong><t t-esc="course.name"/></strong> has been received.</p>
+                    <p class="text-muted">We will follow up at <t t-esc="student.email"/> with the course quotation.</p>
+                    <a href="/academy/courses" class="btn btn-primary btn-lg mt-3">Explore more courses</a>
+                </div>
             </div>
         </t>
     </template>

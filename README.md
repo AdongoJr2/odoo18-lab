@@ -21,6 +21,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Public Academy website** — `/academy` provides a responsive, dynamic course landing page built with Odoo Website templates and SCSS assets.
 - **Sales integration** — each course is backed by a sellable service product, with synchronized naming/pricing and a filtered Sales Orders action.
 - **Finance dashboard** — the Academy Dashboard summarizes course invoices by invoiced, posted, paid, and outstanding amounts.
+- **Public enrollment** — visitors can browse `/academy/courses`, request enrollment for a course, and generate a customer-linked Sales quotation.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Seed & demo data** — master courses/subjects plus enrolled demo students for instant evaluation.
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules, menu/field restrictions, and multi-company siloing.

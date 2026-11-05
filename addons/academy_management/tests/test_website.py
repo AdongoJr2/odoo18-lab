@@ -10,3 +10,29 @@ class TestAcademyWebsite(TransactionCase):
         self.assertEqual(routing["auth"], "public")
         self.assertTrue(routing["website"])
         self.assertTrue(self.env.ref("academy_management.academy_website_home"))
+
+    def test_public_enrollment_routes_and_templates_are_configured(self):
+        from ..controllers.website import AcademyWebsiteController
+
+        self.assertEqual(
+            AcademyWebsiteController.academy_courses.original_routing["routes"],
+            ["/academy/courses"],
+        )
+        self.assertEqual(
+            AcademyWebsiteController.academy_course.original_routing["routes"],
+            ["/academy/course/<int:course_id>"],
+        )
+        self.assertEqual(
+            AcademyWebsiteController.academy_enroll.original_routing["routes"],
+            ["/academy/course/<int:course_id>/enroll"],
+        )
+        self.assertEqual(
+            AcademyWebsiteController.academy_enroll.original_routing["methods"],
+            ["POST"],
+        )
+        self.assertTrue(
+            self.env.ref("academy_management.academy_website_course_detail")
+        )
+        self.assertTrue(
+            self.env.ref("academy_management.academy_website_enrollment_success")
+        )
