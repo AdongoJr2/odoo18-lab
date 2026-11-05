@@ -130,9 +130,10 @@ class AcademyStudent(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get("student_id", "New") == "New":
-                sequence = (
-                    self.env["ir.sequence"].next_by_code("academy.student") or "New"
-                )
+                sequence_model = self.env["ir.sequence"]
+                sequence = sequence_model.next_by_code("academy.student") or "New"
+                while self.search_count([("student_id", "=", sequence)]):
+                    sequence = sequence_model.next_by_code("academy.student") or "New"
 
                 if not sequence:
                     raise UserError(
