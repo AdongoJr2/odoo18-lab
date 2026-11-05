@@ -30,6 +30,7 @@
         "security/ir.model.access.csv",
         "data/student_sequence.xml",
         "data/academy_data.xml",
+        "data/crm_data.xml",
         "views/student_views.xml",
         "views/course_views.xml",
         "views/subject_views.xml",

@@ -11,4 +11,11 @@ class AcademyPaymentTransaction(models.Model):
                 [("sale_order_id", "in", transaction.sale_order_ids.ids)]
             )
             students.filtered(lambda student: student.state == "draft").action_enroll()
+            students.mapped("crm_lead_id").write(
+                {
+                    "stage_id": self.env.ref(
+                        "academy_management.crm_stage_academy_enrolled"
+                    ).id
+                }
+            )
         return result

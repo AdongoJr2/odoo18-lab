@@ -24,6 +24,7 @@ ready-to-run Docker Compose stack (PostgreSQL 16 + Odoo 18).
 - **Public enrollment** — visitors can browse `/academy/courses`, request enrollment for a course, and generate a customer-linked Sales quotation.
 - **Payment handoff** — enrollment quotations require full payment through Odoo's configured payment provider; confirmed orders enroll the linked student automatically.
 - **CRM admissions** — public enrollment submissions create CRM opportunities linked to the course, student, partner, and enrollment quotation.
+- **Admissions pipeline** — Academy Admissions CRM stages track New Inquiry, Qualified, Quotation Sent, Payment Pending, and Enrolled.
 - **Subject management** — subjects linked to students (many-to-many).
 - **Seed & demo data** — master courses/subjects plus enrolled demo students for instant evaluation.
 - **Role-based security** — Academy Manager, Academy Teacher, and Academy Student groups with ownership rules, menu/field restrictions, and multi-company siloing.

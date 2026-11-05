@@ -126,6 +126,12 @@ class AcademyWebsiteController(http.Controller):
                     "course_id": course.id,
                     "student_id": student.id,
                     "sale_order_id": order.id,
+                    "team_id": request.env.ref(
+                        "academy_management.crm_team_academy_admissions"
+                    ).id,
+                    "stage_id": request.env.ref(
+                        "academy_management.crm_stage_academy_quotation_sent"
+                    ).id,
                 }
             )
         )
@@ -141,6 +147,9 @@ class AcademyWebsiteController(http.Controller):
                 }
             )
             .link
+        )
+        lead.stage_id = request.env.ref(
+            "academy_management.crm_stage_academy_payment_pending"
         )
         return request.render(
             "academy_management.academy_website_enrollment_success",

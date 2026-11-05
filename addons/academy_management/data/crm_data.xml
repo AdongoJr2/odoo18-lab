@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_team_academy_admissions" model="crm.team">
+        <field name="name">Academy Admissions</field>
+        <field name="sequence">5</field>
+        <field name="use_opportunities">True</field>
+    </record>
+
+    <record id="crm_stage_academy_new_inquiry" model="crm.stage">
+        <field name="name">New Inquiry</field>
+        <field name="sequence">5</field>
+        <field name="team_id" ref="crm_team_academy_admissions"/>
+    </record>
+    <record id="crm_stage_academy_qualified" model="crm.stage">
+        <field name="name">Qualified</field>
+        <field name="sequence">10</field>
+        <field name="team_id" ref="crm_team_academy_admissions"/>
+    </record>
+    <record id="crm_stage_academy_quotation_sent" model="crm.stage">
+        <field name="name">Quotation Sent</field>
+        <field name="sequence">20</field>
+        <field name="team_id" ref="crm_team_academy_admissions"/>
+    </record>
+    <record id="crm_stage_academy_payment_pending" model="crm.stage">
+        <field name="name">Payment Pending</field>
+        <field name="sequence">30</field>
+        <field name="team_id" ref="crm_team_academy_admissions"/>
+    </record>
+    <record id="crm_stage_academy_enrolled" model="crm.stage">
+        <field name="name">Enrolled</field>
+        <field name="sequence">40</field>
+        <field name="team_id" ref="crm_team_academy_admissions"/>
+        <field name="is_won">True</field>
+    </record>
+</odoo>
