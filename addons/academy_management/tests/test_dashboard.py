@@ -53,6 +53,14 @@ class TestAcademyDashboard(TransactionCase):
         self.assertGreater(invoice.amount_total, invoice.amount_untaxed)
         self.assertEqual(invoice.move_type, "out_invoice")
 
+    def test_dashboard_admissions_pipeline_counts(self):
+        team = self.env.ref("academy_management.crm_team_academy_admissions")
+        lead = self.env["crm.lead"].create(
+            {"name": "Pipeline Inquiry", "type": "opportunity", "team_id": team.id}
+        )
+        self.assertEqual(lead.team_id, team)
+        self.assertIn(lead.stage_id.name, ("New", "New Inquiry"))
+
     def test_dashboard_actions_are_configured(self):
         dashboard = self.env["academy.dashboard"].create({})
 

@@ -151,6 +151,11 @@ class AcademyWebsiteController(http.Controller):
         lead.stage_id = request.env.ref(
             "academy_management.crm_stage_academy_payment_pending"
         )
+        lead.activity_schedule(
+            "mail.mail_activity_data_todo",
+            summary="Follow up on course enrollment",
+            note=f"Review the enrollment request for {course.name}.",
+        )
         return request.render(
             "academy_management.academy_website_enrollment_success",
             {"student": student, "course": course, "payment_link": payment_link},

@@ -28,6 +28,23 @@ class AcademyDashboardController(http.Controller):
                 ("invoice_line_ids.product_id", "in", course_products.ids),
             ]
         )
+        admissions_leads = request.env["crm.lead"].search(
+            [
+                (
+                    "team_id",
+                    "=",
+                    request.env.ref(
+                        "academy_management.crm_team_academy_admissions"
+                    ).id,
+                )
+            ]
+        )
+        enrolled_stage = request.env.ref(
+            "academy_management.crm_stage_academy_enrolled"
+        )
+        payment_stage = request.env.ref(
+            "academy_management.crm_stage_academy_payment_pending"
+        )
         return {
             "total_students": len(students),
             "enrolled_students": len(
@@ -53,6 +70,22 @@ class AcademyDashboardController(http.Controller):
                 ),
                 "outstanding": sum(invoices.mapped("amount_residual")),
                 "currency": request.env.company.currency_id.symbol,
+            },
+            "admissions": {
+                "total": len(admissions_leads),
+                "payment_pending": len(
+                    admissions_leads.filtered(
+                        lambda lead: lead.stage_id == payment_stage
+                    )
+                ),
+                "enrolled": len(
+                    admissions_leads.filtered(
+                        lambda lead: lead.stage_id == enrolled_stage
+                    )
+                ),
+                "open": len(
+                    admissions_leads.filtered(lambda lead: not lead.stage_id.is_won)
+                ),
             },
             "courses": [
                 {
