@@ -22,6 +22,7 @@
         "sale",
         "web",
         "website",
+        "website_payment",
     ],
     "data": [
         "security/security.xml",
