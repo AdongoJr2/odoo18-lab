@@ -1,7 +1,8 @@
 from datetime import date
 
-from odoo.exceptions import AccessError, ValidationError
-from odoo.tests import TransactionCase
+from odoo.exceptions import AccessError, UserError, ValidationError
+from odoo.tests import Form, TransactionCase
+from psycopg2 import IntegrityError
 
 
 class TestAcademyAttendance(TransactionCase):
@@ -31,10 +32,24 @@ class TestAcademyAttendance(TransactionCase):
                 }
             )
 
+    def test_attendance_requires_student_course(self):
+        student = self.Student.create({"name": "Unassigned Student"})
+        with self.assertRaises(UserError):
+            self.Attendance.create({"student_id": student.id})
+
+    def test_student_onchange_sets_course(self):
+        other_course = self.Course.create({"name": "History"})
+        other_student = self.Student.create(
+            {"name": "History Student", "course_id": other_course.id}
+        )
+        with Form(self.Attendance) as attendance_form:
+            attendance_form.student_id = other_student
+            self.assertEqual(attendance_form.course_id, other_course)
+
     def test_attendance_is_unique_per_student_and_day(self):
-        values = {"student_id": self.student.id}
+        values = {"student_id": self.student.id, "attendance_date": "2000-01-01"}
         self.Attendance.create(values)
-        with self.assertRaises(Exception):
+        with self.assertRaises(IntegrityError):
             self.Attendance.create(values)
 
     def test_student_cannot_create_attendance(self):

@@ -139,6 +139,34 @@ Rules worth remembering for CSV data files:
 
 ### Run tests with Docker
 
+Prefer focused runs while developing. The test file runner loads the current
+Python code and executes only the requested files, without running unrelated
+tests or updating the module:
+
+```bash
+# Fastest path for Python-only changes
+make test-focused FILES="test_attendance.py test_student_models.py"
+
+# Use this when module data, views, security records, or schema changed
+make test-focused-update FILES="test_security.py"
+```
+
+Relevant test files are grouped by area:
+
+- `models/student.py`: `test_student_models.py`, `test_multi_company.py`,
+  `test_security.py`, `test_wizards.py`, `test_reports.py`
+- `models/course.py`: `test_course_models.py`, `test_data_files.py`,
+  `test_dashboard.py`
+- `models/attendance.py`: `test_attendance.py`, `test_multi_company.py`
+- `models/subject.py`: `test_subject_models.py`, `test_data_files.py`
+- `security/`: `test_security.py`, `test_multi_company.py`
+- `wizard/`: `test_wizards.py`
+- `report/`: `test_reports.py`
+- `data/`, `demo/`, or `__manifest__.py`: `test_data_files.py` with a fresh
+  install, because demo data is loaded only during installation
+
+For a fresh database and the complete addon suite:
+
 ```bash
 # Create a fresh test database
 docker compose exec db psql -U odoo -d postgres -c \

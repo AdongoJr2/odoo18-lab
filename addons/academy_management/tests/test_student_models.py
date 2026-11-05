@@ -1,4 +1,6 @@
+from odoo.exceptions import UserError
 from odoo.tests import TransactionCase
+from psycopg2 import IntegrityError
 
 
 class TestAcademyStudent(TransactionCase):
@@ -54,7 +56,7 @@ class TestAcademyStudent(TransactionCase):
                 "course_id": course.id,
             }
         )
-        with self.assertRaises(Exception):
+        with self.assertRaises(IntegrityError):
             course.unlink()
 
     def test_student_subject_many2many(self):
@@ -99,7 +101,7 @@ class TestAcademyStudentStateTransitions(TransactionCase):
     def test_cannot_enroll_without_course(self):
         """Test that enrollment requires a course."""
         student = self.env["academy.student"].create({"name": "Test Student"})
-        with self.assertRaises(Exception):
+        with self.assertRaises(UserError):
             student.action_enroll()
 
     def test_cannot_enroll_in_full_course(self):
@@ -114,8 +116,23 @@ class TestAcademyStudentStateTransitions(TransactionCase):
         student2 = self.env["academy.student"].create(
             {"name": "Student 2", "course_id": course.id}
         )
-        with self.assertRaises(Exception):
+        with self.assertRaises(UserError):
             student2.action_enroll()
+
+    def test_cannot_graduate_non_enrolled_student(self):
+        student = self.env["academy.student"].create({"name": "Test Student"})
+        with self.assertRaises(UserError):
+            student.action_graduate()
+
+    def test_cannot_drop_graduated_student(self):
+        course = self.env["academy.course"].create({"name": "Test Course"})
+        student = self.env["academy.student"].create(
+            {"name": "Test Student", "course_id": course.id}
+        )
+        student.action_enroll()
+        student.action_graduate()
+        with self.assertRaises(UserError):
+            student.action_drop()
 
     def test_reset_to_draft(self):
         """Test resetting student to draft."""
